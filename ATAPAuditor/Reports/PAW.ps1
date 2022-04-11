@@ -108,7 +108,7 @@
 						}
 						[ReportSection] @{
 							Title = 'User Rights Assignment'
-							AuditInfos = Test-AuditGroup "Microsoft Windows 10-Microsoft-21H1#UserRight"
+							AuditInfos = Test-AuditGroup "Microsoft Windows 10-Microsoft-21H1#UserRights"
 						}
 						[ReportSection] @{
 							Title = 'Account Policies'
