@@ -56,7 +56,7 @@ Microsoft Windows Server 2016 DC | V1R6 | 1.2.0 | FINAL | - | -
 Microsoft Windows Server 2019 | V1R2 | 1.2.1 | FINAL | - | -
 Microsoft Windows Server 2019 DC | V1R2 | 1.1.0 | FINAL | - | -
 Microsoft Windows Server 2022 | - | - | FINAL | - | -
-PAW | V1R16, Google Chrome V1R15 | Windows 10 1.9.0, Google Chrome 2.0.0, Firefox 1.0.0 | Windows 10 21H2, Windows 10 16082019, Edge 85 | SiM-08202, SiSyPHuS Version March 2021 (HD, ND, NE, Logging) | -
+PAW | V1R16, Google Chrome V1R15 | Windows 10 1.9.0, Google Chrome 2.0.0, Firefox 1.0.0 | Windows 10 21H2, Windows 10 16082019, Edge 85 | SiM-08202, SiSyPHuS Version March 2021 (HD, ND, NE, Logging) | 10.2021
 
 The report *Microsoft Office 2016* aggregates the results of all *Microsoft Office 2016 \<Product>* reports.
 The report *Microsoft Windows 10 BSI* aggregates the results of all *BSI recommendations for Microsoft Windows 10 1809* reports.
