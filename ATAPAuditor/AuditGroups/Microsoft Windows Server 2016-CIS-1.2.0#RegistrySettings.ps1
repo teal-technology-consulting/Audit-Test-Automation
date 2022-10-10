@@ -651,17 +651,13 @@
     Task = "(L1) Configure 'Interactive logon: Message text for users attempting to log on'"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" `
-                -Name "LegalNoticeText" `
-                | Select-Object -ExpandProperty "LegalNoticeText"
-        
-            if ($regValue -notmatch ".+") {
+            $regValue = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
+            if ($regValue.legalnoticetext -notmatch ".+" -or [string]::IsNullOrWhiteSpace($regValue.legalnoticetext) -or [string]::IsNullOrEmpty($regValue.legalnoticetext)) {
                 return @{
-                    Message = "Registry value is '$regValue'. Expected: Matching expression '.+'"
+                    Message = "Registry value is '$($regValue.legalnoticetext)'. Expected: Matching expression '.+'"
                     Status = "False"
                 }
-            }
+            } 
         }
         catch [System.Management.Automation.PSArgumentException] {
             return @{
@@ -1157,10 +1153,10 @@
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Lsa" `
-                -Name "LSAAnonymousNameLookup" `
-                | Select-Object -ExpandProperty "LSAAnonymousNameLookup"
+                -Name "TurnOffAnonymousBlock" `
+                | Select-Object -ExpandProperty "TurnOffAnonymousBlock"
         
-            if ($regValue -ne 0) {
+            if ($regValue -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 0"
                     Status = "False"
@@ -5181,9 +5177,9 @@
                 -Name "fMinimizeConnections" `
                 | Select-Object -ExpandProperty "fMinimizeConnections"
         
-            if ($regValue -ne 1) {
+            if ($null -eq $regValue -or 0 -eq $regValue) {
                 return @{
-                    Message = "Registry value is '$regValue'. Expected: 1"
+                    Message = "Registry value is '$regValue'. Expected: 1-3"
                     Status = "False"
                 }
             }
@@ -5217,7 +5213,7 @@
                 -Name "fBlockNonDomain" `
                 | Select-Object -ExpandProperty "fBlockNonDomain"
         
-            if ($regValue -ne 1) {
+            if ($regValue -eq 0) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
