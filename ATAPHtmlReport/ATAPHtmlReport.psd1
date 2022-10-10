@@ -2,7 +2,7 @@
 BSD 3-Clause License
 
 Copyright (c) 2018, FB Pro GmbH
-Copyright 2021, Teal Technology Consulting GmbH
+Copyright (c) 2021, Teal Technology Consulting GmbH
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 RootModule = 'ATAPHtmlReport.psm1'
 
 # Version number of this module.
+
 ModuleVersion = '1.9'
 
 # Supported PSEditions
