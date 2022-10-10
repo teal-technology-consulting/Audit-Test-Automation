@@ -1049,6 +1049,7 @@ function Get-ATAPHtmlReport {
 				}
 				.header {
 					background-color: #c6c9cc;
+					height: 100px;
 				}
 				.green{
 					height: 160px; width: 160px;background-color:#33cca6;
