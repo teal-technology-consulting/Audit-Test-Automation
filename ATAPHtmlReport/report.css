@@ -379,21 +379,21 @@ button{
 
 /* Color for each Risk */
 #medium_medium, #medium_low, #low_medium{
-	background-color: #ffc000;
+	background-color: #FFFF00;
 }
 
 #high_low, #high_medium, #high_high, #medium_high, #low_high{
-	background-color: red;
+	background-color: #FFC000;
 }
 
 #critical_low, #critical_medium, #critical_high, #critical_critical, #high_critical, #medium_critical, #low_critical{
-	background-color: purple;
+	background-color: #FF0000;
 }
 
 
 /* Low Risk */
 #low_low{
-	background-color: #548dd6;
+	background-color: #00B050;
 	grid-column-start: 3;
 	grid-column-end: 4;
 	grid-row-start: 4;
