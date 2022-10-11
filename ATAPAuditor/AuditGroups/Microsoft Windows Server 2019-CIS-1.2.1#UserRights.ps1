@@ -51,16 +51,9 @@ function ConvertTo-NTAccountUser {
             else {
                 $sidAccount = ([System.Security.Principal.NTAccount]$Name).Translate([System.Security.Principal.SecurityIdentifier])
             }
-           if ($sidAccount.Translate([System.Security.Principal.NTAccount]) -eq "NULL SID") {
-                return @{
-                    Account = $null
-                    Sid = $sidAccount.Value
-                }
-            } else {
-                return @{
-                    Account = $sidAccount.Translate([System.Security.Principal.NTAccount])
-                    Sid = $sidAccount.Value
-                }
+            return @{
+                Account = $sidAccount.Translate([System.Security.Principal.NTAccount])
+                Sid = $sidAccount.Value
             }
         }
         catch {
@@ -110,9 +103,6 @@ function ConvertTo-NTAccountUser {
 [AuditTest] @{
     Id = "2.2.2"
     Task = "(L1) Ensure 'Access this computer from the network' is set to 'Administrators, Authenticated Users, ENTERPRISE DOMAIN CONTROLLERS' (DC only)"
-    Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "MemberServer" }
-    )
     Test = {
         $securityPolicy = Get-AuditResource "WindowsSecurityPolicy"
         $currentUserRights = $securityPolicy["Privilege Rights"]["SeNetworkLogonRight"]
@@ -220,9 +210,6 @@ function ConvertTo-NTAccountUser {
 [AuditTest] @{
     Id = "2.2.5"
     Task = "(L1) Ensure 'Add workstations to domain' is set to 'Administrators' (DC only)"
-    Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "MemberServer" }
-    )
     Test = {
         $securityPolicy = Get-AuditResource "WindowsSecurityPolicy"
         $currentUserRights = $securityPolicy["Privilege Rights"]["SeMachineAccountPrivilege"]
@@ -330,9 +317,6 @@ function ConvertTo-NTAccountUser {
 [AuditTest] @{
     Id = "2.2.8"
     Task = "(L1) Ensure 'Allow log on through Remote Desktop Services' is set to 'Administrators' (DC only)"
-    Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "MemberServer" }
-    )
     Test = {
         $securityPolicy = Get-AuditResource "WindowsSecurityPolicy"
         $currentUserRights = $securityPolicy["Privilege Rights"]["SeRemoteInteractiveLogonRight"]
@@ -652,9 +636,6 @@ function ConvertTo-NTAccountUser {
 [AuditTest] @{
     Id = "2.2.17"
     Task = "(L1) Ensure 'Create symbolic links' is set to 'Administrators' (DC only)"
-    Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "MemberServer" }
-    )
     Test = {
         $securityPolicy = Get-AuditResource "WindowsSecurityPolicy"
         $currentUserRights = $securityPolicy["Privilege Rights"]["SeCreateSymbolicLinkPrivilege"]
@@ -732,13 +713,6 @@ function ConvertTo-NTAccountUser {
             "S-1-5-32-544"
             "S-1-5-83-0"
         ) | ConvertTo-NTAccountUser | Where-Object { $null -ne $_ }
-
-        if ($null -eq (Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V)) {
-            return @{
-                Status = "None"
-                Message = "Hyper-V not installed."
-            }
-        }
         
         $unexpectedUsers = $currentUserRights.Account | Where-Object { $_ -notin $identityAccounts.Account }
         $missingUsers = $identityAccounts.Account | Where-Object { $_ -notin $currentUserRights.Account }
@@ -803,9 +777,6 @@ function ConvertTo-NTAccountUser {
 [AuditTest] @{
     Id = "2.2.20"
     Task = "(L1) Ensure 'Deny access to this computer from the network' to include 'Guests' (DC only)"
-    Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "MemberServer" }
-    )
     Test = {
         $securityPolicy = Get-AuditResource "WindowsSecurityPolicy"
         $currentUserRights = $securityPolicy["Privilege Rights"]["SeDenyNetworkLogonRight"]
@@ -813,11 +784,14 @@ function ConvertTo-NTAccountUser {
             "S-1-5-32-546"
         ) | ConvertTo-NTAccountUser | Where-Object { $null -ne $_ }
         
-        
+        $unexpectedUsers = $currentUserRights.Account | Where-Object { $_ -notin $identityAccounts.Account }
         $missingUsers = $identityAccounts.Account | Where-Object { $_ -notin $currentUserRights.Account }
         
-        if (($missingUsers.Count -gt 0)) {
+        if (($unexpectedUsers.Count -gt 0) -or ($missingUsers.Count -gt 0)) {
             $messages = @()
+            if ($unexpectedUsers.Count -gt 0) {
+                $messages += "The user right 'SeDenyNetworkLogonRight' contains following unexpected users: " + ($unexpectedUsers -join ", ")
+            }
             if ($missingUsers.Count -gt 0) {
                 $messages += "The user 'SeDenyNetworkLogonRight' setting does not contain the following users: " + ($missingUsers -join ", ")
             }
@@ -846,11 +820,14 @@ function ConvertTo-NTAccountUser {
             "S-1-2-0"
         ) | ConvertTo-NTAccountUser | Where-Object { $null -ne $_ }
         
-        
+        $unexpectedUsers = $currentUserRights.Account | Where-Object { $_ -notin $identityAccounts.Account }
         $missingUsers = $identityAccounts.Account | Where-Object { $_ -notin $currentUserRights.Account }
         
-        if (($missingUsers.Count -gt 0)) {
+        if (($unexpectedUsers.Count -gt 0) -or ($missingUsers.Count -gt 0)) {
             $messages = @()
+            if ($unexpectedUsers.Count -gt 0) {
+                $messages += "The user right 'SeDenyNetworkLogonRight' contains following unexpected users: " + ($unexpectedUsers -join ", ")
+            }
             if ($missingUsers.Count -gt 0) {
                 $messages += "The user 'SeDenyNetworkLogonRight' setting does not contain the following users: " + ($missingUsers -join ", ")
             }
@@ -878,11 +855,14 @@ function ConvertTo-NTAccountUser {
             "S-1-5-32-546"
         ) | ConvertTo-NTAccountUser | Where-Object { $null -ne $_ }
         
-        
+        $unexpectedUsers = $currentUserRights.Account | Where-Object { $_ -notin $identityAccounts.Account }
         $missingUsers = $identityAccounts.Account | Where-Object { $_ -notin $currentUserRights.Account }
         
-        if (($missingUsers.Count -gt 0)) {
+        if (($unexpectedUsers.Count -gt 0) -or ($missingUsers.Count -gt 0)) {
             $messages = @()
+            if ($unexpectedUsers.Count -gt 0) {
+                $messages += "The user right 'SeDenyBatchLogonRight' contains following unexpected users: " + ($unexpectedUsers -join ", ")
+            }
             if ($missingUsers.Count -gt 0) {
                 $messages += "The user 'SeDenyBatchLogonRight' setting does not contain the following users: " + ($missingUsers -join ", ")
             }
@@ -910,11 +890,14 @@ function ConvertTo-NTAccountUser {
             "S-1-5-32-546"
         ) | ConvertTo-NTAccountUser | Where-Object { $null -ne $_ }
         
-        
+        $unexpectedUsers = $currentUserRights.Account | Where-Object { $_ -notin $identityAccounts.Account }
         $missingUsers = $identityAccounts.Account | Where-Object { $_ -notin $currentUserRights.Account }
         
-        if (($missingUsers.Count -gt 0)) {
+        if (($unexpectedUsers.Count -gt 0) -or ($missingUsers.Count -gt 0)) {
             $messages = @()
+            if ($unexpectedUsers.Count -gt 0) {
+                $messages += "The user right 'SeDenyServiceLogonRight' contains following unexpected users: " + ($unexpectedUsers -join ", ")
+            }
             if ($missingUsers.Count -gt 0) {
                 $messages += "The user 'SeDenyServiceLogonRight' setting does not contain the following users: " + ($missingUsers -join ", ")
             }
@@ -942,11 +925,14 @@ function ConvertTo-NTAccountUser {
             "S-1-5-32-546"
         ) | ConvertTo-NTAccountUser | Where-Object { $null -ne $_ }
         
-        
+        $unexpectedUsers = $currentUserRights.Account | Where-Object { $_ -notin $identityAccounts.Account }
         $missingUsers = $identityAccounts.Account | Where-Object { $_ -notin $currentUserRights.Account }
         
-        if (($missingUsers.Count -gt 0)) {
+        if (($unexpectedUsers.Count -gt 0) -or ($missingUsers.Count -gt 0)) {
             $messages = @()
+            if ($unexpectedUsers.Count -gt 0) {
+                $messages += "The user right 'SeDenyInteractiveLogonRight' contains following unexpected users: " + ($unexpectedUsers -join ", ")
+            }
             if ($missingUsers.Count -gt 0) {
                 $messages += "The user 'SeDenyInteractiveLogonRight' setting does not contain the following users: " + ($missingUsers -join ", ")
             }
@@ -967,9 +953,6 @@ function ConvertTo-NTAccountUser {
 [AuditTest] @{
     Id = "2.2.25"
     Task = "(L1) Ensure 'Deny log on through Remote Desktop Services' to include 'Guests' (DC only)"
-    Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "MemberServer" }
-    )
     Test = {
         $securityPolicy = Get-AuditResource "WindowsSecurityPolicy"
         $currentUserRights = $securityPolicy["Privilege Rights"]["SeDenyRemoteInteractiveLogonRight"]
@@ -977,11 +960,14 @@ function ConvertTo-NTAccountUser {
             "S-1-5-32-546"
         ) | ConvertTo-NTAccountUser | Where-Object { $null -ne $_ }
         
-        
+        $unexpectedUsers = $currentUserRights.Account | Where-Object { $_ -notin $identityAccounts.Account }
         $missingUsers = $identityAccounts.Account | Where-Object { $_ -notin $currentUserRights.Account }
         
-        if (($missingUsers.Count -gt 0)) {
+        if (($unexpectedUsers.Count -gt 0) -or ($missingUsers.Count -gt 0)) {
             $messages = @()
+            if ($unexpectedUsers.Count -gt 0) {
+                $messages += "The user right 'SeDenyRemoteInteractiveLogonRight' contains following unexpected users: " + ($unexpectedUsers -join ", ")
+            }
             if ($missingUsers.Count -gt 0) {
                 $messages += "The user 'SeDenyRemoteInteractiveLogonRight' setting does not contain the following users: " + ($missingUsers -join ", ")
             }
@@ -1002,9 +988,6 @@ function ConvertTo-NTAccountUser {
 [AuditTest] @{
     Id = "2.2.26"
     Task = "(L1) Ensure 'Deny log on through Remote Desktop Services' is set to 'Guests, Local account' (MS only)"
-    Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "MemberServer" }
-    )
     Test = {
         $securityPolicy = Get-AuditResource "WindowsSecurityPolicy"
         $currentUserRights = $securityPolicy["Privilege Rights"]["SeDenyRemoteInteractiveLogonRight"]
@@ -1013,11 +996,14 @@ function ConvertTo-NTAccountUser {
             "S-1-5-113"
         ) | ConvertTo-NTAccountUser | Where-Object { $null -ne $_ }
         
-        
+        $unexpectedUsers = $currentUserRights.Account | Where-Object { $_ -notin $identityAccounts.Account }
         $missingUsers = $identityAccounts.Account | Where-Object { $_ -notin $currentUserRights.Account }
         
-        if (($missingUsers.Count -gt 0)) {
+        if (($unexpectedUsers.Count -gt 0) -or ($missingUsers.Count -gt 0)) {
             $messages = @()
+            if ($unexpectedUsers.Count -gt 0) {
+                $messages += "The user right 'SeDenyRemoteInteractiveLogonRight' contains following unexpected users: " + ($unexpectedUsers -join ", ")
+            }
             if ($missingUsers.Count -gt 0) {
                 $messages += "The user 'SeDenyRemoteInteractiveLogonRight' setting does not contain the following users: " + ($missingUsers -join ", ")
             }
@@ -1038,9 +1024,6 @@ function ConvertTo-NTAccountUser {
 [AuditTest] @{
     Id = "2.2.27"
     Task = "(L1) Ensure 'Enable computer and user accounts to be trusted for delegation' is set to 'Administrators' (DC only)"
-    Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "MemberServer" }
-    )
     Test = {
         $securityPolicy = Get-AuditResource "WindowsSecurityPolicy"
         $currentUserRights = $securityPolicy["Privilege Rights"]["SeEnableDelegationPrivilege"]
@@ -1219,9 +1202,6 @@ function ConvertTo-NTAccountUser {
 [AuditTest] @{
     Id = "2.2.31"
     Task = "(L1) Ensure 'Impersonate a client after authentication' is set to 'Administrators, LOCAL SERVICE, NETWORK SERVICE, SERVICE' (DC only)"
-    Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "MemberServer" }
-    )
     Test = {
         $securityPolicy = Get-AuditResource "WindowsSecurityPolicy"
         $currentUserRights = $securityPolicy["Privilege Rights"]["SeImpersonatePrivilege"]
@@ -1442,9 +1422,6 @@ function ConvertTo-NTAccountUser {
 [AuditTest] @{
     Id = "2.2.36"
     Task = "(L2) Ensure 'Log on as a batch job' is set to 'Administrators' (DC Only)"
-    Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "MemberServer" }
-    )
     Test = {
         $securityPolicy = Get-AuditResource "WindowsSecurityPolicy"
         $currentUserRights = $securityPolicy["Privilege Rights"]["SeBatchLogonRight"]
@@ -1480,9 +1457,6 @@ function ConvertTo-NTAccountUser {
 [AuditTest] @{
     Id = "2.2.37"
     Task = "(L1) Ensure 'Manage auditing and security log' is set to 'Administrators' and (when Exchange is running in the environment) 'Exchange Servers' (DC only)"
-    Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "MemberServer" }
-    )
     Test = {
         $securityPolicy = Get-AuditResource "WindowsSecurityPolicy"
         $currentUserRights = $securityPolicy["Privilege Rights"]["SeSecurityPrivilege"]
@@ -1834,9 +1808,6 @@ function ConvertTo-NTAccountUser {
 [AuditTest] @{
     Id = "2.2.47"
     Task = "(L1) Ensure 'Synchronize directory service data' is set to 'No One' (DC only)"
-    Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "MemberServer" }
-    )
     Test = {
         $securityPolicy = Get-AuditResource "WindowsSecurityPolicy"
         $currentUserRights = $securityPolicy["Privilege Rights"]["SeSyncAgentPrivilege"]

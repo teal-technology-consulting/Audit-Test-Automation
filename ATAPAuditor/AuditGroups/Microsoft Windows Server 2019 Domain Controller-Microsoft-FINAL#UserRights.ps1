@@ -51,16 +51,9 @@ function ConvertTo-NTAccountUser {
             else {
                 $sidAccount = ([System.Security.Principal.NTAccount]$Name).Translate([System.Security.Principal.SecurityIdentifier])
             }
-           if ($sidAccount.Translate([System.Security.Principal.NTAccount]) -eq "NULL SID") {
-                return @{
-                    Account = $null
-                    Sid = $sidAccount.Value
-                }
-            } else {
-                return @{
-                    Account = $sidAccount.Translate([System.Security.Principal.NTAccount])
-                    Sid = $sidAccount.Value
-                }
+            return @{
+                Account = $sidAccount.Translate([System.Security.Principal.NTAccount])
+                Sid = $sidAccount.Value
             }
         }
         catch {

@@ -3,47 +3,39 @@
 	Title = "Windows Server 2016 Audit Report"
 	ModuleName = "ATAPAuditor"
 	BasedOn = @(
-		"DISA Windows Server 2016 Security Technical Implementation Guide, Version: 1.12, Date: 2020-06-17"
+		"DISA Windows Server 2016 Security Technical Implementation Guide, Version: V1R6, Date: 2018-10-26"
 		"CIS Microsoft Windows Server 2016 RTM (Release 1607) Benchmark, Version: 1.1.0, Date: 2018-10-15"
 		"Microsoft Security baseline for Windows Server 2016, Version: FINAL, Date 2016-10-17"
 	)
 	Sections = @(
 		[ReportSection] @{
-			Title = "General Benchmarks"
-			Description = "This section contains general benchmarks"
-			SubSections = @(
-				[ReportSection] @{
-					Title = 'Security Base Data'
-					Description = "This section contains basic recommendations for a secure Microsoft Windows configuration."
-					AuditInfos = Test-AuditGroup "Microsoft Windows Security Base Data"
-				}
-			)
-		}
-		[ReportSection] @{
 			Title = "DISA Recommendations"
 			Description = "This section contains all recommendations from the Windows Server 2016 Security Technical Implementation Guide V1R5 2018-07-27"
 			SubSections = @(
 				[ReportSection] @{
+					Title = "Registry Settings/Group Policies"
+					AuditInfos = Test-AuditGroup "Microsoft Windows Server 2016-DISA-V1R6#RegistrySettings"
+				},
+				[ReportSection] @{
 					Title = "User Rights Assignment"
-					AuditInfos = Test-AuditGroup "Microsoft Windows Server 2016-DISA-1.12#UserRights"
+					AuditInfos = Test-AuditGroup "Microsoft Windows Server 2016-DISA-V1R6#UserRights"
 				},
 				[ReportSection] @{
 					Title = "Account Policies"
-					AuditInfos = Test-AuditGroup "Microsoft Windows Server 2016-DISA-1.12#AccountPolicies"
+					AuditInfos = Test-AuditGroup "Microsoft Windows Server 2016-DISA-V1R6#AccountPolicies"
 				},
 				[ReportSection] @{
-					Title = "Security Options"
-					AuditInfos = Test-AuditGroup "Microsoft Windows Server 2016-DISA-1.12#SecurityOptions"
+					Title = "Windows Features"
+					AuditInfos = Test-AuditGroup "Microsoft Windows Server 2016-DISA-V1R6#WindowsFeatures"
+				},
+				[ReportSection] @{
+					Title = "File System Permissions"
+					AuditInfos = Test-AuditGroup "Microsoft Windows Server 2016-DISA-V1R6#FileSystemPermissions"
 				},
 				[ReportSection] @{
 					Title = "Registry Permissions"
-					AuditInfos = Test-AuditGroup "Microsoft Windows Server 2016-DISA-1.12#RegistrySettings"
-				},
-				[ReportSection] @{
-					Title = " Advanced Audit Policy Configuration"
-					AuditInfos = Test-AuditGroup "Microsoft Windows Server 2016-DISA-1.12#AuditPolicies"
-				}
-				#,
+					AuditInfos = Test-AuditGroup "Microsoft Windows Server 2016-DISA-V1R6#RegistryPermissions"
+				}#,
 				# [ReportSection] @{
 				# 	Title = "Other"
 				# 	AuditInfos = Test-AuditGroup "Microsoft Windows Server 2016-DISA-#Other"

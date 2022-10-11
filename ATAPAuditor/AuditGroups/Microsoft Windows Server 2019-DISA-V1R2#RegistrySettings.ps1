@@ -1916,7 +1916,7 @@
     Id = "WN19-DC-000320"
     Task = "Windows Server 2019 domain controllers must require LDAP access signing."
     Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "DomainController" }
+        @{ "Property" = "DomainRole"; "Values" = "PrimaryDomainController" }
     )
     Test = {
         try {
@@ -1955,7 +1955,7 @@
     Id = "WN19-DC-000330"
     Task = "Windows Server 2019 domain controllers must be configured to allow reset of machine account passwords."
     Constraints = @(
-        @{ "Property" = "DomainRole"; "Values" = "DomainController" }
+        @{ "Property" = "DomainRole"; "Values" = "PrimaryDomainController" }
     )
     Test = {
         try {

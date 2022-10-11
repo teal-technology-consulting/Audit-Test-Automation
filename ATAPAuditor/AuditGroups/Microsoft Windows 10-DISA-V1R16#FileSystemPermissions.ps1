@@ -65,32 +65,19 @@ function Convert-FileSystemRights {
         Write-Verbose "File system permissions for TARGET: ${Env:SystemRoot}\System32\winevt\Logs\Application.evtx)"
         
         $PrincipalRights = @{
-            "S-1-5-32-544" = "FullControl"
-            "S-1-5-18" = "FullControl"
-            "S-1-5-80-880578595-1860270145-482643319-2788375705-1540778122" = "FullControl"
+            "BUILTIN\Administrators" = "FullControl"
+            "NT AUTHORITY\SYSTEM" = "FullControl"
+            "NT SERVICE\EventLog" = "FullControl"
         }
         
-        
-        $convertedACLS = @() # is hashtable of string -> string
-        #convert IndentityReferences to SIDs
-        foreach($principal in $acls){
-            $element = new-object System.Security.Principal.NTAccount $principal.IdentityReference
-            $sid = $element.Translate([type]'System.Security.Principal.SecurityIdentifier')
-            $convertedACLS += [PSCustomObject]@{
-                IdentityReference = $sid.Value
-                FileSystemRights = $principal.FileSystemRights
-            }
+        $principalsWithTooManyRights = $acls | Where-Object {
+            $_.IdentityReference.Value -NotIn $PrincipalRights.Keys
         }
-        
-        
-        $principalsWithTooManyRights = $convertedACLS | Where-Object {
-            $_.IdentityReference -NotIn $PrincipalRights.Keys
-        }
-        $principalsWithWrongRights = $convertedACLS `
-            | Where-Object { $_.IdentityReference -in $PrincipalRights.Keys } `
+        $principalsWithWrongRights = $acls `
+            | Where-Object { $_.IdentityReference.Value -in $PrincipalRights.Keys } `
             | Where-Object {
                 # convert string to rights enum
-                $referenceRights = $PrincipalRights[$_.IdentityReference] | ForEach-Object { [FileSystemRights]$_ }
+                $referenceRights = $PrincipalRights[$_.IdentityReference.Value] | ForEach-Object { [FileSystemRights]$_ }
                 $mappedRights = Convert-FileSystemRights -OriginalRights $_.FileSystemRights
                 $mappedRights -notin $referenceRights
             }
@@ -102,7 +89,7 @@ function Convert-FileSystemRights {
                 "Unexpected '$($_.IdentityReference)' with access '$mappedRights'"
             }
             $messages += $principalsWithWrongRights | ForEach-Object {
-                $idKey = $_.IdentityReference
+                $idKey = $_.IdentityReference.Value
                 $mappedRights = Convert-FileSystemRights -OriginalRights $_.FileSystemRights
                 "Found '$($idKey)' with access '$($mappedRights)' instead of '$($PrincipalRights[$idKey])'"
             }
@@ -128,32 +115,19 @@ function Convert-FileSystemRights {
         Write-Verbose "File system permissions for TARGET: ${Env:SystemRoot}\System32\winevt\Logs\Security.evtx)"
         
         $PrincipalRights = @{
-            "S-1-5-32-544" = "FullControl"
-            "S-1-5-18" = "FullControl"
-            "S-1-5-80-880578595-1860270145-482643319-2788375705-1540778122" = "FullControl"
+            "BUILTIN\Administrators" = "FullControl"
+            "NT AUTHORITY\SYSTEM" = "FullControl"
+            "NT SERVICE\EventLog" = "FullControl"
         }
         
-        
-        $convertedACLS = @() # is hashtable of string -> string
-        #convert IndentityReferences to SIDs
-        foreach($principal in $acls){
-            $element = new-object System.Security.Principal.NTAccount $principal.IdentityReference
-            $sid = $element.Translate([type]'System.Security.Principal.SecurityIdentifier')
-            $convertedACLS += [PSCustomObject]@{
-                IdentityReference = $sid.Value
-                FileSystemRights = $principal.FileSystemRights
-            }
+        $principalsWithTooManyRights = $acls | Where-Object {
+            $_.IdentityReference.Value -NotIn $PrincipalRights.Keys
         }
-        
-        
-        $principalsWithTooManyRights = $convertedACLS | Where-Object {
-            $_.IdentityReference -NotIn $PrincipalRights.Keys
-        }
-        $principalsWithWrongRights = $convertedACLS `
-            | Where-Object { $_.IdentityReference -in $PrincipalRights.Keys } `
+        $principalsWithWrongRights = $acls `
+            | Where-Object { $_.IdentityReference.Value -in $PrincipalRights.Keys } `
             | Where-Object {
                 # convert string to rights enum
-                $referenceRights = $PrincipalRights[$_.IdentityReference] | ForEach-Object { [FileSystemRights]$_ }
+                $referenceRights = $PrincipalRights[$_.IdentityReference.Value] | ForEach-Object { [FileSystemRights]$_ }
                 $mappedRights = Convert-FileSystemRights -OriginalRights $_.FileSystemRights
                 $mappedRights -notin $referenceRights
             }
@@ -165,7 +139,7 @@ function Convert-FileSystemRights {
                 "Unexpected '$($_.IdentityReference)' with access '$mappedRights'"
             }
             $messages += $principalsWithWrongRights | ForEach-Object {
-                $idKey = $_.IdentityReference
+                $idKey = $_.IdentityReference.Value
                 $mappedRights = Convert-FileSystemRights -OriginalRights $_.FileSystemRights
                 "Found '$($idKey)' with access '$($mappedRights)' instead of '$($PrincipalRights[$idKey])'"
             }
@@ -191,32 +165,19 @@ function Convert-FileSystemRights {
         Write-Verbose "File system permissions for TARGET: ${Env:SystemRoot}\System32\winevt\Logs\System.evtx)"
         
         $PrincipalRights = @{
-            "S-1-5-32-544" = "FullControl"
-            "S-1-5-18" = "FullControl"
-            "S-1-5-80-880578595-1860270145-482643319-2788375705-1540778122" = "FullControl"
+            "BUILTIN\Administrators" = "FullControl"
+            "NT AUTHORITY\SYSTEM" = "FullControl"
+            "NT SERVICE\EventLog" = "FullControl"
         }
         
-        
-        $convertedACLS = @() # is hashtable of string -> string
-        #convert IndentityReferences to SIDs
-        foreach($principal in $acls){
-            $element = new-object System.Security.Principal.NTAccount $principal.IdentityReference
-            $sid = $element.Translate([type]'System.Security.Principal.SecurityIdentifier')
-            $convertedACLS += [PSCustomObject]@{
-                IdentityReference = $sid.Value
-                FileSystemRights = $principal.FileSystemRights
-            }
+        $principalsWithTooManyRights = $acls | Where-Object {
+            $_.IdentityReference.Value -NotIn $PrincipalRights.Keys
         }
-        
-        
-        $principalsWithTooManyRights = $convertedACLS | Where-Object {
-            $_.IdentityReference -NotIn $PrincipalRights.Keys
-        }
-        $principalsWithWrongRights = $convertedACLS `
-            | Where-Object { $_.IdentityReference -in $PrincipalRights.Keys } `
+        $principalsWithWrongRights = $acls `
+            | Where-Object { $_.IdentityReference.Value -in $PrincipalRights.Keys } `
             | Where-Object {
                 # convert string to rights enum
-                $referenceRights = $PrincipalRights[$_.IdentityReference] | ForEach-Object { [FileSystemRights]$_ }
+                $referenceRights = $PrincipalRights[$_.IdentityReference.Value] | ForEach-Object { [FileSystemRights]$_ }
                 $mappedRights = Convert-FileSystemRights -OriginalRights $_.FileSystemRights
                 $mappedRights -notin $referenceRights
             }
@@ -228,7 +189,7 @@ function Convert-FileSystemRights {
                 "Unexpected '$($_.IdentityReference)' with access '$mappedRights'"
             }
             $messages += $principalsWithWrongRights | ForEach-Object {
-                $idKey = $_.IdentityReference
+                $idKey = $_.IdentityReference.Value
                 $mappedRights = Convert-FileSystemRights -OriginalRights $_.FileSystemRights
                 "Found '$($idKey)' with access '$($mappedRights)' instead of '$($PrincipalRights[$idKey])'"
             }
