@@ -172,8 +172,8 @@ Permanent scope: Machine
 
  ## Related links
 
-* Github-Link: https://github.com/fbprogmbh/Audit-Test-Automation
-* Our Homepage: https://fb-pro.com/
+* Github-Link: https://github.com/teal-technology-consulting/Teal-Audit-Proof
+* Our Homepage: https://www.teal-consulting.de
 * BSI SiSyPHus: https://www.bsi.bund.de/EN/Topics/Cyber-Security/Recommendations/SiSyPHuS_Win10/SiSyPHuS_node.html
 * Center for Internet Security: https://www.cisecurity.org/
 * DISA STIGs: https://public.cyber.mil/stigs/
@@ -182,5 +182,5 @@ Permanent scope: Machine
  ## Questions, issues or project support
 
 *  For questions or issues regarding Audit TAP please use Github issue tracker.
-*  For questions regarding project support please write a short mail to team@fb-pro.com 
+*  For questions regarding project support please write a short mail to info@teal-consulting.de
 
