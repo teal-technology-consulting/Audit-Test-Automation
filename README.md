@@ -1,10 +1,27 @@
 # Audit Test Automation Package
+<div align="center">
+	<table>
+		<tr>
+	<th>Powershell Gallery</th>
+	<th>Direct download</th>
+		</tr>
+		<tr>
+			<td>
 
 ATAPHtmlReport:\
-[![atashtmlreportphield](https://img.shields.io/powershellgallery/v/ATAPHtmlReport)](https://www.powershellgallery.com/packages/ATAPHtmlReport)
+[![ataphtmlreportshield](https://img.shields.io/powershellgallery/v/ATAPHtmlReport)](https://www.powershellgallery.com/packages/ATAPHtmlReport)
 
 ATAPAuditor:\
 [![atapauditorshield](https://img.shields.io/powershellgallery/v/ATAPAuditor)](https://www.powershellgallery.com/packages/ATAPAuditor)
+			</td>
+			<td>
+
+AuditTAP Release 5.3:\
+[![ATAP](https://www.fb-pro.com/wp-content/uploads/2022/09/atap-download-button.png)](https://github.com/fbprogmbh/Audit-Test-Automation/archive/refs/tags/v5.3.zip)
+			</td>
+		</tr>
+	</table>
+</div>
 
 ## Overview
 
@@ -35,23 +52,24 @@ Report | DISA | CIS | Microsoft | BSI | ACSC
 --------- | -----| --- | -- | --- | ---
 Google Chrome | V1R15 | 2.0.0 | - | - | -
 Mozilla Firefox | V4R24 | 1.0.0 | - | - | -
-Microsoft Edge | - | - | 85 | - | -
+Microsoft Edge | - | - | 99 | - | -
 Microsoft Internet Explorer 11 | V1R16 | 1.0.0 | 2004 | - | -
-Microsoft IIS10 | - | 1.1.0 | - | - | -
+Microsoft IIS10 | - | 1.1.1 | - | - | -
 Microsoft Office 2016 Excel | V1R2 | - | - | - | -
 Microsoft Office 2016 Outlook | V1R2 | - | - | - | -
 Microsoft Office 2016 PowerPoint | V1R1 | - | - | - | -
 Microsoft Office 2016 SkypeForBusiness | V1R1 | - | - | - | -
 Microsoft Office 2016 Word | V1R1 | - | - | - | -
-Microsoft Office 2016 | - | 1.1.0 | - | - | -
-Microsoft SQL Server 2016 | - | 1.0.0 | - | - | -
+Microsoft Office 2016 | V1R1, V1R2 | 1.1.0 | - | - | -
+Microsoft SQL Server 2016 | - | 1.3.0 | - | - | -
 Microsoft Windows 7 | - | 3.1.0 | - | - | -
 Microsoft Windows 10 | V1R16 | 1.9.0 | 21H2 | SiM-08202, SiSyPHuS Version March 2021 (HD, ND, NE, Logging) | 10.2021
 Microsoft Windows 10 GDPR | - | - | 16082019 | V1.1 | -
-Microsoft Windows 10 BSI | - | - | - | SiM-08202, SiSyPHuS Version March 2021 (HD, ND, NE, Logging)| -
-Microsoft Windows 11 | - | - | FINAL | - | -
-Microsoft Windows Server 2012 R2 | - | 2.4.0 | - | - | -
-Microsoft Windows Server 2016 | V1R6 | 1.2.0 | FINAL | - | -
+Microsoft Windows 10 BSI | - | - | - | SiM-08202, SiSyPHuS 1.3 | -
+Microsoft Windows 10 Complete | V1R16 | 1.12.0 | 21H1 | SiM-08202, SiSyPHuS 1.3 | 10.2021
+Microsoft Windows 11 | - | 1.0.0 | 20H2 | SiM-08202, SiSyPHuS 1.3 | -
+Microsoft Windows Server 2012 R2 | 2.19 | 2.5.0 | - | - | -
+Microsoft Windows Server 2016 | 1.12 | 1.2.0 | FINAL | - | -
 Microsoft Windows Server 2016 DC | V1R6 | 1.2.0 | FINAL | - | -
 Microsoft Windows Server 2019 | V1R2 | 1.2.1 | FINAL | - | -
 Microsoft Windows Server 2019 DC | V1R2 | 1.1.0 | FINAL | - | -
@@ -87,13 +105,22 @@ Find the tutorial as follows:
 See the [Installing a PowerShell module](https://docs.microsoft.com/en-us/powershell/scripting/developer/module/installing-a-powershell-module) guide for more specific instructions.
 
 1. Download the most [recent release](https://github.com/fbprogmbh/Audit-Test-Automation/releases/latest)
+2. In case your systems security configuration prevents direct execution / access on internet based ("untrusted") files you may need to "unblock" the file first. 
 
-2. Extract the archive, for example by using the following commands in Powershell or by using your favourite unzipping toolset.
-
-```Powershell
-Expand-Archive -Path ".\Audit TAP.zip" -DestinationPath "Audit TAP"
+```PowerShell
+Unblock-File -Path .\Audit-Test-Automation-5.3.zip -Verbose
 ```
-3. Copy the `ATAPAuditor` and the `ATAPHtmlReport` modules to any of the paths of `$env:PSModulePath`.
+The following screenshot shows the output:
+
+![grafik](https://user-images.githubusercontent.com/35689334/208451043-e183cb31-629c-493c-a46b-97d14c002e70.png)
+
+3. Extract the archive, for example by using the following commands in PowerShell or by using your favourite unzipping toolset.  
+When using PowerShell, please check correct version number with below code example.
+
+```PowerShell
+Expand-Archive -Path ".\Audit-Test-Automation-5.3.zip" -DestinationPath "AuditTAP"
+```
+4. Copy `ATAPAuditor` and `ATAPHtmlReport` modules to any of the paths of `$env:PSModulePath`.
 
 ### Installation from PS Gallery
 
@@ -112,10 +139,17 @@ Import-Module -Name ATAPAuditor
 By default the module creates a new report in the `Documents\ATAPReports` folder. You can create a report for any report named in the [above table](#reports). Just substitute the `ReportName` with the name of the benchmark.
 The force parameter creates the folder if it doesn't exist. For using an alternative Path, see [customization](#customization).
 
-```Powershell
-Save-ATAPHtmlReport -ReportName "Microsoft IIS10" -Force
-Save-ATAPHtmlReport -ReportName "Mozilla Firefox" -Force
+**Examples:**
+```PowerShell
+Save-ATAPHtmlReport -ReportName "Microsoft Windows 10 Complete" -RiskScore -Path C:\Temp\report.html -DarkMode
+Save-ATAPHtmlReport -ReportName "Microsoft Windows 10 BSI" -RiskScore -Path C:\Temp -DarkMode 
+Save-ATAPHtmlReport -ReportName "Microsoft Windows Server 2022" -Path C:\Temp -DarkMode 
+Save-ATAPHtmlReport -ReportName "Google Chrome"
+Save-ATAPHtmlReport -ReportName "Ubuntu 20.04" -DarkMode
 ```
+Pro-Tip: After typing *Save-ATAPHtmlReport -ReportName*, use the keyboard shortcut `<ctrl>` + `<space>` to display all available parameters and select the desired  report using arrow-keys.
+
+The `ATAPAuditor` module also provides a simple menu based runner for reports. It can be found in `ATAPAuditor\Helpers\Menu.ps1`. When using the Windows based installer, a shortcut can be found in the start menu.
 
 ## Good to know
 
@@ -125,9 +159,18 @@ Save-ATAPHtmlReport -ReportName "Mozilla Firefox" -Force
 Set-ExecutionPolicy RemoteSigned -scope CurrentUser
 ```
 
+* You can extend your AuditReports with a RiskScore by adding the RiskScore-Switch parameter (currently only available for Windows Reports):
+```powershell
+Save-ATAPHtmlReport -ReportName "Microsoft Windows 10" -Force -RiskScore
+```
+
 * The `ATAPAuditor` has a dependency on `ATAPHtmlReport`.
 * Some reports take more than a few seconds because hundreds of individual settings and controls checked. So please be patient, the result will satisfy your needs 😉
 * If you used old versions of Audit TAP you may want to clean up your modules. Be sure you have not integrated Audit TAP functionality in reporting processes. In order to accomplish this task you can use the following script.
+=======
+* `ATAPAuditor` has a dependency on `ATAPHtmlReport`.
+* Some reports take more than a few seconds because hundreds of individual settings and controls are checked. Please be patient, the result will satisfy your needs 😉
+* If you used old versions of AuditTAP you may want to clean up your modules. Be sure you have not integrated AuditTAP functionality in reporting processes. In order to accomplish this task you can use the following script.
 
 ```Powershell
 # Remove all old Audit TAP Reports if available

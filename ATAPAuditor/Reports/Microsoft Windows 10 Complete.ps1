@@ -2,7 +2,7 @@
 	Title = "Windows 10 Report"
 	ModuleName = "ATAPAuditor"
 	BasedOn = @(
-		"CIS Microsoft Windows 10 Enterprise Release 1909 Benchmark, Version: 1.9.0, Date: 2020-08-14"
+		"CIS Microsoft Windows 10 Enterprise Release 21H1 Benchmark, Version: 1.12.0, Date: 2022-02-15"
 		"DISA Windows 10 Security Technical Implementation Guide, Version: V1R16, Date: 2019-10-25"
 		"CYBERGOVAU Hardening Microsoft Windows 10 version 21H1 Workstations, Version: 10.2020, Date 2020-10-01"
 		"Microsoft Security baseline (FINAL) for Windows 10, Version: 21H1, Date: 2021-05-18"
@@ -16,15 +16,15 @@
 			SubSections = @(
 				[ReportSection] @{
 					Title = 'Registry Settings/Group Policies'
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10-CIS-1.9.0#RegistrySettings"
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-CIS-1.12.0#RegistrySettings"
 				}
 				[ReportSection] @{
 					Title = 'User Rights Assignment'
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10-CIS-1.9.0#UserRights"
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-CIS-1.12.0#UserRights"
 				}
 				[ReportSection] @{
 					Title = 'Account Policies'
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10-CIS-1.9.0#AccountPolicies"
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-CIS-1.12.0#AccountPolicies"
 				}
 				# [ReportSection] @{
 				# 	Title = 'Windows Firewall with Advanced Security'
@@ -34,9 +34,57 @@
 					Title = 'Advanced Audit Policy Configuration'
 					AuditInfos = Test-AuditGroup "Microsoft Windows 10-CIS-1.12.0#AuditPolicies"
 				}
+			)
+		}
+		[ReportSection] @{
+			Title = "DISA Recommendations"
+			Description = "This section contains the DISA STIG results."
+			SubSections = @(
+				[ReportSection] @{
+					Title = "Registry Settings/Group Policies"
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-DISA-V1R16#RegistrySettings"
+				}
+				[ReportSection] @{
+					Title = "User Rights Assignment"
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-DISA-V1R16#UserRights"
+				}
+				[ReportSection] @{
+					Title = "Account Policies"
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-DISA-V1R16#AccountPolicies"
+				}
+				[ReportSection] @{
+					Title = "Windows Features"
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-DISA-V1R16#WindowsOptionalFeatures"
+				}
+				[ReportSection] @{
+					Title = "File System Permissions"
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-DISA-V1R16#FileSystemPermissions"
+				}
+				[ReportSection] @{
+					Title = "Registry Permissions"
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-DISA-V1R16#RegistryPermissions"
+				}
+			)
+		}
+		[ReportSection] @{
+			Title = 'CyberGovAu Benchmarks'
+			Description = 'This section contains the CyberGovAu Benchmark results.'
+			SubSections = @(
+				[ReportSection] @{
+					Title = 'Registry Settings/Group Policies'
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-CyberGovAu-10.2020#RegistrySettings"
+				}
+				[ReportSection] @{
+					Title = 'User Rights Assignment'
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-CyberGovAu-10.2020#UserRights"
+				}
+				[ReportSection] @{
+					Title = 'Account Policies'
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-CyberGovAu-10.2020#AccountPolicies"
+				}
 				[ReportSection] @{
 					Title = 'Advanced Audit Policy Configuration'
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10-CIS-1.12.0#SecurityOptions"
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-CyberGovAu-10.2020#AuditPolicies"
 				}
 			)
 		}
@@ -92,6 +140,10 @@
 					Title = 'Account Policies'
 					AuditInfos = Test-AuditGroup "Microsoft Windows 10 SiSyPHuS HD-BSI-1.3#AccountPolicies"
 				}
+				[ReportSection] @{
+					Title = 'Security Options'
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10 SiSyPHuS HD-BSI-1.3#SecurityOptions"
+				}
 			)
 		}
 		[ReportSection] @{
@@ -109,6 +161,10 @@
 				[ReportSection] @{
 					Title = 'Account Policies'
 					AuditInfos = Test-AuditGroup "Microsoft Windows 10 SiSyPHuS ND-BSI-1.3#AccountPolicies"
+				}
+				[ReportSection] @{
+					Title = 'Security Options'
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10 SiSyPHuS ND-BSI-1.3#SecurityOptions"
 				}
 			)
 		}
@@ -134,33 +190,58 @@
 				}
 			)
 		}
+		# TODO: Will be removed with version 5.3, if no crucial changes are necessary on these AuditGroups
+		# [ReportSection] @{
+		# 	Title = 'BSI Benchmarks BPOL'
+		# 	Description = 'This section contains the BSI Benchmark BPOL results.'
+		# 	SubSections = @(
+		# 		[ReportSection] @{
+		# 			Title = 'Registry Settings/Group Policies'
+		# 			AuditInfos = Test-AuditGroup "Microsoft Windows 10 BSI BPOL#RegistrySettings"
+		# 		}
+		# 		[ReportSection] @{
+		# 			Title = 'User Rights Assignment'
+		# 			AuditInfos = Test-AuditGroup "Microsoft Windows 10 BSI BPOL#UserRights"
+		# 		}
+		# 		[ReportSection] @{
+		# 			Title = 'Account Policies'
+		# 			AuditInfos = Test-AuditGroup "Microsoft Windows 10 BSI BPOL#AccountPolicies"
+		# 		}
+		# 		# [ReportSection] @{
+		# 		# 	Title = 'Security Options'
+		# 		# 	AuditInfos = Test-AuditGroup "Microsoft Windows 10 BSI BPOL#SecurityOptions"
+		# 		# }
+		# 	)
+		# }
 		[ReportSection] @{
-			Title = "DISA Recommendations"
-			Description = "This section contains the DISA STIG results."
+			Title = 'BSI Benchmarks SiSyPHus-BSI'
+			Description = 'This section contains the BSI Benchmark results.'
 			SubSections = @(
 				[ReportSection] @{
-					Title = "Registry Settings/Group Policies"
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10-DISA-V1R16#RegistrySettings"
+					Title = 'Registry Settings/Group Policies'
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10 SiSyPHus-BSI-V1.1#RegistrySettings"
+				}
+			)
+		}
+		[ReportSection] @{
+			Title = 'BSI Benchmarks SiSyPHus-BSI Bundespolizei'
+			Description = 'This section contains the BSI Benchmark results.'
+			SubSections = @(
+				[ReportSection] @{
+					Title = 'Registry Settings/Group Policies'
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-BSI-Bundespolizei#RegistrySettings"
 				}
 				[ReportSection] @{
-					Title = "User Rights Assignment"
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10-DISA-V1R16#UserRights"
+					Title = 'User Rights Assignment'
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-BSI-Bundespolizei#UserRights"
 				}
 				[ReportSection] @{
-					Title = "Account Policies"
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10-DISA-V1R16#AccountPolicies"
+					Title = 'Account Policies'
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-BSI-Bundespolizei#AccountPolicies"
 				}
 				[ReportSection] @{
-					Title = "Windows Features"
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10-DISA-V1R16#WindowsOptionalFeatures"
-				}
-				[ReportSection] @{
-					Title = "File System Permissions"
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10-DISA-V1R16#FileSystemPermissions"
-				}
-				[ReportSection] @{
-					Title = "Registry Permissions"
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10-DISA-V1R16#RegistryPermissions"
+					Title = 'Advanced Audit Policy Configuration'
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10-BSI-Bundespolizei#AuditPolicies"
 				}
 			)
 		}

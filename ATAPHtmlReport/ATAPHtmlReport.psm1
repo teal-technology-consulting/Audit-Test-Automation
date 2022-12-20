@@ -144,6 +144,83 @@ function Convert-SectionTitleToHtmlId {
 	return ([char[]]$Title | ForEach-Object $charMap) -join ''
 }
 
+function CreateToc{
+	param(
+		[Parameter(Mandatory = $true)]
+		$title
+	)
+	htmlElement 'li' @{} {
+		htmlElement 'a' @{ href = "#$($title)" } {"$($title)" }
+	}
+}
+
+function CreateReportContent{
+	param(
+		[Parameter(Mandatory = $true)]
+		$tests,
+		[Parameter(Mandatory = $true)]
+		$title
+	)
+	$amountOfFailedTests = 0
+	foreach($test in $tests){
+		if($test.Status -eq 'False'){
+			$amountOfFailedTests ++
+		}
+	}
+	#if at least one test is failed
+	if($amountOfFailedTests -gt 0){
+		htmlElement 'h2' @{ id="$($title)"; style="padding: 5px 10px; border-radius: 8px; color:white; background-color: #cc0000; display: inline;"}{"$($title)"}
+	}
+	else{
+		htmlElement 'h2' @{ id="$($title)"; style="padding: 5px 10px; border-radius: 8px; color:white; background-color: #33cca6; display: inline;"}{"$($title)"}
+	}
+	htmlElement 'table' @{class = 'audit-info'; style = 'margin-bottom: 50px; margin-top: 20px;'} {
+		htmlElement 'tbody' @{}{
+			htmlElement 'tr' @{}{
+				htmlElement 'th' @{} {"Id"}
+				htmlElement 'th' @{} {"Task"}
+				htmlElement 'th' @{} {"Message"}
+				htmlElement 'th' @{} {"Status"}
+			}
+			foreach($test in $tests){
+				htmlElement 'tr' @{}{
+					htmlElement 'td' @{} { "$($test.Id)"}
+					htmlElement 'td' @{} { "$($test.Task)"}
+					htmlElement 'td' @{} { "$($test.Message)"}
+					htmlElement 'td' @{} { 
+						if($test.Status -eq 'False'){
+							htmlElement 'span' @{class="severityResultFalse"}{
+								"$($test.Status)"
+							}
+						}
+						elseif($test.Status -eq 'True'){
+							htmlElement 'span' @{class="severityResultTrue"}{
+								"$($test.Status)"
+							}
+						}
+						elseif($test.Status -eq 'None'){
+							htmlElement 'span' @{class="severityResultNone"}{
+								"$($test.Status)"
+							}
+						}
+						elseif($test.Status -eq 'Warning'){
+							htmlElement 'span' @{class="severityResultWarning"}{
+								"$($test.Status)"
+							}
+						}
+						elseif($test.Status -eq 'Error'){
+							htmlElement 'span' @{class="severityResultError"}{
+								"$($test.Status)"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
 function Get-HtmlTableRow {
 	param(
 		[Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -264,16 +341,44 @@ function Get-HtmlReportSection {
 }
 
 function Get-ATAPHostInformation {
-	$infos = Get-CimInstance Win32_OperatingSystem
-	$disk = Get-CimInstance Win32_LogicalDisk | Where-Object -Property DeviceID -eq "C:"
-
-	return [ordered]@{
-		"Hostname"                  = [System.Net.Dns]::GetHostByName(($env:computerName)).HostName
-		"Operating System"          = $infos.Caption
-		"Installation Language"     = ((Get-UICulture).DisplayName)
-		"Build Number"              = $infos.BuildNumber
-		"Free physical memory (GB)" = "{0:N3}" -f ($infos.FreePhysicalMemory / 1MB)
-		"Free disk space(GB)      " = "{0:N1}" -f ($disk.FreeSpace / 1GB)
+	$unixOS = [System.Environment]::OSVersion.Platform -eq 'Unix' # returns 'Unix' on Linux and MacOS and 'Win32NT' on Windows, PS v6+ has builtin environment variable for this
+	if ($unixOS) {
+		return @{
+			"Hostname"                  = hostname
+			"Operating System"          = (Get-Content /etc/os-release | Select-String -Pattern '^PRETTY_NAME=\"(.*)\"$').Matches.Groups[1].Value
+			"Installation Language"     = (($(locale) | Where-Object { $_ -match "LANG=" }) -split '=')[1]
+			"Kernel Version"            = uname -r
+			"Free physical memory" = "{0:N1} GB" -f (( -split (Get-Content /proc/meminfo | Where-Object { $_ -match 'MemFree:' }))[1] / 1MB)
+			"Free disk space"      = "{0:N1} GB" -f ((Get-PSDrive | Where-Object { $_.Name -eq '/' }).Free / 1GB)
+			"System Uptime"				= uptime -p
+		}
+	}
+ else {
+		$infos = Get-CimInstance Win32_OperatingSystem
+		$disk = Get-CimInstance Win32_LogicalDisk | Where-Object -Property DeviceID -eq "C:"
+		$role = Switch ((Get-CimInstance -Class Win32_ComputerSystem).DomainRole) {
+			"0"	{ "Standalone Workstation" }
+			"1"	{ "Member Workstation" }
+			"2"	{ "Standalone Server" }
+			"3"	{ "Member Server" }
+			"4"	{ "Backup Domain Controller" }
+			"5"	{ "Primary Domain Controller" }
+		}
+		$freeMemory = ($infos.FreePhysicalMemory /1024) / 1024;
+		$totalMemory = ($infos.TotalVirtualMemorySize /1024) /1024;
+		$uptime = (get-date) - (gcim Win32_OperatingSystem).LastBootUpTime
+		$v = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'	
+		return @{
+			"Hostname"                  = [System.Net.Dns]::GetHostByName(($env:computerName)).HostName
+			"Domain role"               = $role
+			"Operating System"          = $infos.Caption
+			# format output
+			"Build Number"              = 'Version {0} (Build {1}.{2})' -f $v.DisplayVersion, $v.CurrentBuildNumber, $v.UBR
+			"Installation Language"     = ((Get-UICulture).DisplayName)
+			"Free disk space"      = "{0:N1} GB" -f ($disk.FreeSpace / 1GB)
+			"Free physical memory" = "{0:N3}" -f "$([math]::Round(($freeMemory/$totalMemory)*100,1))%  ($([math]::Round($freeMemory,1)) GB / $([math]::Round($totalMemory,1)) GB)" 
+			"System Uptime"				= '{0:d1}:{1:d2}:{2:d2}:{3:d2}' -f $uptime.Days, $uptime.Hours, $uptime.Minutes, $uptime.Seconds
+		} 
 	}
 }
 
@@ -419,6 +524,17 @@ function Get-ATAPHtmlReport {
 		[array]
 		$Sections,
 
+		[Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
+		[RSFullReport[]]
+		$RSReport,
+
+		[Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
+		[FoundationReport]
+		$FoundationReport,
+
+		[Parameter(Mandatory = $false)]
+		[switch] $RiskScore,
+
 		[switch] $DarkMode,
 
 		[switch] $ComplianceStatus
@@ -448,52 +564,235 @@ function Get-ATAPHtmlReport {
 			htmlElement 'div' @{ class = 'header content'} {
 				htmlElement 'img' @{src = $Settings.Logo; width="300"; height="118"; align="right"} {}
 				htmlElement 'h1' @{} { $Title }
-				htmlElement 'p' @{} {
-					"Generated by the <i>$ModuleName</i> Module Version <i>$AuditorVersion</i> by TEAL Technology Consulting GmbH based on the Audit-Test-Automation by FB Pro GmbH."
-				}
-				htmlElement 'p' @{} {
-					"Based on the following compliancy sets:"
-					htmlElement 'ul' @{} {
-						foreach ($item in $BasedOn) {
-							htmlElement 'li' @{} { $item }
-						}
-					}
-				}
+				# htmlElement 'p' @{} {
+				# 	"Generated by the <i>$ModuleName</i> Module Version <i>$AuditorVersion</i> by FB Pro GmbH. Get it in the <a href=`"$($Settings.PackageLink)`">Audit Test Automation Package</a>. Are you seeing a lot of red sections? Check out our <a href=`"$($Settings.SolutionsLink)`">hardening solutions</a>."
+				# }
+				# htmlElement 'p' @{} {
+				# 	"Based on:"
+				# 	htmlElement 'ul' @{} {
+				# 		foreach ($item in $BasedOn) {
+				# 			htmlElement 'li' @{} { $item }
+				# 		}
+				# 	}
+				# 	htmlElement 'p' @{} { "This report was generated on $((Get-Date)) on $($HostInformation.Hostname) with ATAPHtmlReport version $ModuleVersion." }
+				# }
 			}
 			# Main section
 			htmlElement 'div' @{ class = 'main content' } {
 				htmlElement 'div' @{ class = 'host-information' } {
-					htmlElement 'p' @{} { "This report was generated on $((Get-Date)) on $($HostInformation.Hostname) with TAPHtmlReport version $ModuleVersion." }
-					# Host information
-					htmlElement 'table' @{} {
-						htmlElement 'tbody' @{} {
-							foreach ($hostDatum in $HostInformation.GetEnumerator()) {
-								htmlElement 'tr' @{} {
-									htmlElement 'th' @{ scope = 'row' } { $hostDatum.Name }
-									htmlElement 'td' @{} { $hostDatum.Value }
-								}
-							}
-						}
-					}
+					# htmlElement 'p' @{} { "This report was generated on $((Get-Date)) on $($HostInformation.Hostname) with ATAPHtmlReport version $ModuleVersion." }
+					# # Host information
+					# htmlElement 'table' @{} {
+					# 	htmlElement 'tbody' @{} {
+					# 		foreach ($hostDatum in $HostInformation.GetEnumerator()) {
+					# 			htmlElement 'tr' @{} {
+					# 				htmlElement 'th' @{ scope = 'row' } { $hostDatum.Name }
+					# 				htmlElement 'td' @{} { $hostDatum.Value }
+					# 			}
+					# 		}
+
+					# 	}
+					# }
 					# Show compliance status
 					if ($ComplianceStatus) {
 						$sliceColorClass = Get-HtmlClassFromStatus 'True'
-						htmlElement 'div' @{ class = 'card'} {
+						htmlElement 'div' @{ class = 'card' } {
 							htmlElement 'h2' @{} { 'Compliance status' }
-							htmlElement 'div' @{ class = 'donut-chart chart'} {
+							htmlElement 'div' @{ class = 'donut-chart chart' } {
 								htmlElement 'div' @{ class = "slice one $sliceColorClass" } { }
 								htmlElement 'div' @{ class = "slice two $sliceColorClass" } { }
 								htmlElement 'div' @{ class = 'chart-center' } { htmlElement 'span' @{} { } }
 							}
 						}
 					}
-					# Summary
-					htmlElement 'h1' @{ style = 'clear:both; padding-top: 50px;' } { 'Summary' }
-					htmlElement 'p' @{} {
-						'A total of {0} tests have been executed.' -f @(
-							$completionStatus.TotalCount
-						)
+
+					$os = [System.Environment]::OSVersion.Platform
+
+					###  Risk Checks ###
+					if($RiskScore){
+						# Quantity
+						$TotalAmountOfRules = $completionStatus.TotalCount;
+						$AmountOfCompliantRules = 0;
+						$AmountOfNonCompliantRules = 0;
+						$None_Rules = 0;
+						foreach ($value in $StatusValues) {
+							if($value -eq 'True'){
+								$AmountOfCompliantRules = $completionStatus[$value].Count
+							}
+							#exclude Rules, which are set to None, to make an independent calculation between Compliant and non Compliant
+							if($value -eq 'None'){
+								$None_Rules = $completionStatus[$value].Count
+							}
+							if($value -eq 'False'){
+								$AmountOfNonCompliantRules = $completionStatus[$value].Count
+							}
+						}
+						$TotalAmountOfRules = $TotalAmountOfRules - $None_Rules
+						if($os -match "Win32NT" -and $Title -match "Win"){
+							# percentage of compliance quantity
+							$QuantityCompliance = [math]::round(($AmountOfCompliantRules / $TotalAmountOfRules) * 100,2);	
+							# Variables, which will be evaluated in report.js
+							htmlElement 'div' @{id="AmountOfNonCompliantRules"} {"$($AmountOfNonCompliantRules)"}
+							htmlElement 'div' @{id="AmountOfCompliantRules"} {"$($AmountOfCompliantRules)"}
+							htmlElement 'div' @{id="TotalAmountOfRules"} {"$($TotalAmountOfRules)"}
+							htmlElement 'div' @{id="QuantityCompliance"} {"$($QuantityCompliance)"}
+		
+							# Severity
+							htmlElement 'div' @{id="TotalAmountOfSeverityRules"} {"$($RSReport.RSSeverityReport.AuditInfos.Length)"}
+							$AmountOfFailedSeverityRules = 0;
+							foreach($rule in $RSReport.RSSeverityReport.AuditInfos){
+								if($rule.Status -eq "False"){
+									$AmountOfFailedSeverityRules ++;
+								}
+							}
+							htmlElement 'div' @{id="AmountOfFailedSeverityRules"} {"$($AmountOfFailedSeverityRules)"}
+						}
 					}
+
+					htmlElement 'div' @{id = 'navigationButtons' } {
+						htmlElement 'button' @{type = 'button'; class = 'navButton'; id = 'summaryBtn'; onclick = "clickButton('1')" } { "Benchmark Compliance" }
+						htmlElement 'button' @{type = 'button'; class = 'navButton'; id = 'foundationDataBtn'; onclick = "clickButton('5')" } { "Security Base Data" }
+						if($RiskScore -and ($os -match "Win32NT" -and $Title -match "Win")){
+							htmlElement 'button' @{type = 'button'; class = 'navButton'; id = 'riskScoreBtn'; onclick = "clickButton('2')" } { "Risk Score" }
+						}
+						htmlElement 'button' @{type = 'button'; class = 'navButton'; id = 'settingsOverviewBtn'; onclick = "clickButton('4')" } { "Hardening Settings" }
+						htmlElement 'button' @{type = 'button'; class = 'navButton'; id = 'referenceBtn'; onclick = "clickButton('3')" } { "About Us" }
+					}
+
+					htmlElement 'div' @{class = 'tabContent'; id = 'settingsOverview'} {
+						# Table of Contents
+						htmlElement 'h1' @{ id = 'toc' } { 'Hardening Settings' }
+						htmlElement 'h2' @{} {"Table Of Contents"}
+						htmlElement 'p' @{} { 'Click the link(s) below for quick access to a report section.' }
+						htmlElement 'ul' @{} {
+							foreach ($section in $Sections) { $section | Get-HtmlToc }
+						}
+						htmlElement 'h2' @{} {"Benchmark Details"}
+						# Report Sections
+						foreach ($section in $Sections) { $section | Get-HtmlReportSection }
+					}
+
+
+					#This div hides/reveals the whole summary section
+					htmlElement 'div' @{class = 'tabContent'; id = 'summary' } {
+						# htmlElement 'p' @{} { "This report was generated on $((Get-Date)) on $($HostInformation.Hostname) with ATAPHtmlReport version $ModuleVersion." }
+						# Host information
+						htmlElement 'h1' @{} { 'Benchmark Compliance' }
+						htmlElement 'div' @{style="float: left;"} {
+							htmlElement 'p' @{} {
+								"Generated by the <i>$ModuleName</i> Module Version <i>$AuditorVersion</i> by FB Pro GmbH. Get it in the <a href=`"$($Settings.PackageLink)`">Audit Test Automation Package</a>."
+							}
+							htmlElement 'p' @{}{
+								"Does your system show low benchmark compliance? Check out our <a href=`"$($Settings.SolutionsLink)`">hardening solutions</a>."
+							}
+							htmlElement 'p' @{} {
+								"Based on:"
+								htmlElement 'ul' @{} {
+									foreach ($item in $BasedOn) {
+										htmlElement 'li' @{} { $item }
+									}
+								}
+								htmlElement 'p' @{} { "This report was generated on $((Get-Date)) on $($HostInformation.Hostname) with ATAPHtmlReport version $ModuleVersion." }
+							}
+						}
+						
+						htmlElement 'div' @{id='riskMatrixSummaryArea'}{
+							if($RiskScore -and ($os -match "Win32NT" -and $Title -match "Win")){
+								htmlElement 'h2' @{id = 'CurrentRiskScore'} {"Current Risk Score on tested System: "}
+								htmlElement 'h3' @{} {'For further information, please head to the tab "Risk Score".'}
+								htmlElement 'div' @{id ='riskMatrixSummary'}{
+									htmlElement 'div' @{id='dotSummaryTab'}{}
+									htmlElement 'div' @{id ='severity'} {
+										htmlElement 'p' @{id = 'severityArea'}{'Severity'}
+									}
+									htmlElement 'div' @{id ='quantity'} {
+										htmlElement 'p' @{id = 'quantityArea'}{'Quantity'}
+									}
+									htmlElement 'div' @{id ='severityCritical'}{"Critical"}
+									htmlElement 'div' @{id ='severityHigh'}{"High"}
+									htmlElement 'div' @{id ='severityMedium'}{"Medium"}
+									htmlElement 'div' @{id ='severityLow'}{"Low"}
+		
+									htmlElement 'div' @{id ='quantityCritical'}{"Critical"}
+									htmlElement 'div' @{id ='quantityHigh'}{"High"}
+									htmlElement 'div' @{id ='quantityMedium'}{"Medium"}
+									htmlElement 'div' @{id ='quantityLow'}{"Low"}
+		
+									#colored areas
+									htmlElement 'div' @{id ='critical_low'}{}
+									htmlElement 'div' @{id ='high_low'}{}
+									htmlElement 'div' @{id ='medium_low'}{}
+									htmlElement 'div' @{id ='low_low'}{}
+		
+									htmlElement 'div' @{id ='critical_medium'}{}
+									htmlElement 'div' @{id ='high_medium'}{}
+									htmlElement 'div' @{id ='medium_medium'}{}
+									htmlElement 'div' @{id ='low_medium'}{}
+		
+									htmlElement 'div' @{id ='critical_high'}{}
+									htmlElement 'div' @{id ='high_high'}{}
+									htmlElement 'div' @{id ='medium_high'}{}
+									htmlElement 'div' @{id ='low_high'}{}
+		
+									htmlElement 'div' @{id ='critical_critical'}{}
+									htmlElement 'div' @{id ='high_critical'}{}
+									htmlElement 'div' @{id ='medium_critical'}{}
+									htmlElement 'div' @{id ='low_critical'}{}
+								}
+							}
+							else{
+								if($RiskScore){
+									htmlElement 'h2' @{id = 'CurrentRiskScore'} {"Current Risk Score on tested System:"}
+									htmlElement 'h2' @{id = 'invalidOS'} {"N/A"}
+									htmlElement 'h3' @{} {'Risk Score calculation implemented for Microsoft Windows OS for now.'}
+									htmlElement 'div' @{id ='riskMatrixSummary'}{
+										htmlElement 'div' @{id ='severity'} {
+											htmlElement 'p' @{id = 'severityArea'}{'Severity'}
+										}
+										htmlElement 'div' @{id ='quantity'} {
+											htmlElement 'p' @{id = 'quantityArea'}{'Quantity'}
+										}
+										htmlElement 'div' @{id ='severityCritical'}{"Critical"}
+										htmlElement 'div' @{id ='severityHigh'}{"High"}
+										htmlElement 'div' @{id ='severityMedium'}{"Medium"}
+										htmlElement 'div' @{id ='severityLow'}{"Low"}
+			
+										htmlElement 'div' @{id ='quantityCritical'}{"Critical"}
+										htmlElement 'div' @{id ='quantityHigh'}{"High"}
+										htmlElement 'div' @{id ='quantityMedium'}{"Medium"}
+										htmlElement 'div' @{id ='quantityLow'}{"Low"}
+			
+										#colored areas
+										htmlElement 'div' @{id ='critical_low'}{}
+										htmlElement 'div' @{id ='high_low'}{}
+										htmlElement 'div' @{id ='medium_low'}{}
+										htmlElement 'div' @{id ='low_low'}{}
+			
+										htmlElement 'div' @{id ='critical_medium'}{}
+										htmlElement 'div' @{id ='high_medium'}{}
+										htmlElement 'div' @{id ='medium_medium'}{}
+										htmlElement 'div' @{id ='low_medium'}{}
+			
+										htmlElement 'div' @{id ='critical_high'}{}
+										htmlElement 'div' @{id ='high_high'}{}
+										htmlElement 'div' @{id ='medium_high'}{}
+										htmlElement 'div' @{id ='low_high'}{}
+			
+										htmlElement 'div' @{id ='critical_critical'}{}
+										htmlElement 'div' @{id ='high_critical'}{}
+										htmlElement 'div' @{id ='medium_critical'}{}
+										htmlElement 'div' @{id ='low_critical'}{}
+									}
+								}
+							}
+						}
+						# Benchmark compliance
+						htmlElement 'h1' @{ style = 'clear:both;' } {}
+						htmlElement 'p' @{} {
+							'A total of {0} tests have been executed.' -f @(
+								$completionStatus.TotalCount
+							)
+						}
 
 					# Status percentage gauge
 					htmlElement 'div' @{ class = 'gauge' } {
@@ -552,23 +851,279 @@ function Get-ATAPHtmlReport {
 								$htmlClass = Get-HtmlClassFromStatus $value
 								$percent = $sectionCountHash[$section.Title + $value + "Percent"]
 
-								htmlElement 'li' @{ class = 'gauge-info-item' } {
-									htmlElement 'span' @{ class = "auditstatus $htmlClass" } { $value }
-									" $count test(s) &#x2259; $($percent)%"
+									htmlElement 'li' @{ class = 'gauge-info-item' } {
+										htmlElement 'span' @{ class = "auditstatus $htmlClass" } { $value }
+										" $count test(s) &#x2259; $($percent)%"
+									}
 								}
 							}
 						}
 					}
 
-
-					# Table of Contents
-					htmlElement 'h1' @{ id = 'toc' } { 'Table of Contents' }
-					htmlElement 'p' @{} { 'Click the link(s) below for quick access to a report section.' }
-					htmlElement 'ul' @{} {
-						foreach ($section in $Sections) { $section | Get-HtmlToc  }
+					#Tab: Foundation Data (Only works for Windows OS!)
+					if([System.Environment]::OSVersion.Platform -ne 'Unix'){			
+						$Sections = $FoundationReport.Sections
 					}
-					# Report Sections Sections
-					foreach ($section in $Sections) { $section | Get-HtmlReportSection }
+					htmlElement 'div' @{class = 'tabContent'; id = 'foundationData'}{
+						htmlElement 'h1' @{} {"Security Base Data"}
+						htmlElement 'div' @{id="systemData"} {
+							htmlElement 'h2' @{style="margin-top: 0px;"} {'System information'}
+							htmlElement 'table' @{id='summaryTable'} {
+								htmlElement 'tbody' @{} {
+									$hostInformation = Get-ATAPHostInformation;
+									#Hostname
+									htmlElement 'tr' @{} {
+										htmlElement 'th' @{ scope = 'row' } { $($hostInformation.Keys)[7] }
+										htmlElement 'td' @{} { $($hostInformation.Values)[7] }
+									}
+									#Domain Role
+									htmlElement 'tr' @{} {
+										htmlElement 'th' @{ scope = 'row' } { $($hostInformation.Keys)[2] }
+										htmlElement 'td' @{} { $($hostInformation.Values)[2] }
+									}
+									#Operating System
+									htmlElement 'tr' @{} {
+										htmlElement 'th' @{ scope = 'row' } { $($hostInformation.Keys)[1] }
+										htmlElement 'td' @{} { $($hostInformation.Values)[1] }
+									}
+									#Build Number
+									htmlElement 'tr' @{} {
+										htmlElement 'th' @{ scope = 'row' } { $($hostInformation.Keys)[5] }
+										htmlElement 'td' @{} { $($hostInformation.Values)[5] }
+									}
+									#Installation Language
+									htmlElement 'tr' @{} {
+										htmlElement 'th' @{ scope = 'row' } { $($hostInformation.Keys)[4] }
+										htmlElement 'td' @{} { $($hostInformation.Values)[4] }
+									}
+									#System uptime
+									htmlElement 'tr' @{} {
+										htmlElement 'th' @{ scope = 'row' } { $($hostInformation.Keys)[0] }
+										htmlElement 'td' @{} { $($hostInformation.Values)[0] }
+									}
+									#Free disk space
+									htmlElement 'tr' @{} {
+										htmlElement 'th' @{ scope = 'row' } { $($hostInformation.Keys)[3] }
+										htmlElement 'td' @{} { $($hostInformation.Values)[3] }
+									}
+									#Free physical memory
+									htmlElement 'tr' @{} {
+										htmlElement 'th' @{ scope = 'row' } { $($hostInformation.Keys)[6] }
+										htmlElement 'td' @{} { $($hostInformation.Values)[6] }
+									}
+								}
+							}
+						}
+						htmlElement 'h2' @{} {"Table Of Contents"}
+						htmlElement 'p' @{} { 'Click the link(s) below for quick access to a report section.' }
+						htmlElement 'ul' @{} {
+							foreach ($section in $Sections) { $section | Get-HtmlToc }
+						}
+						htmlElement 'h2' @{} {"Security Base Data Details"}
+						# Report Sections
+						foreach ($section in $Sections) { $section | Get-HtmlReportSection }
+					}
+					
+					
+					if($RiskScore){
+						htmlElement 'div' @{class = 'tabContent'; id = 'riskScore' } {
+							htmlElement 'h1'@{} {"Risk Score"}
+							htmlElement 'p'@{} {'To get a quick overview of how risky the tested system is, the Risk Score is used. This is made up of the areas "Severity" and "Quantity". The higher risk is used as the overall risk.'}
+							htmlElement 'h2' @{id = 'CurrentRiskScoreRS'} {"Current Risk Score on tested System: "}
+	
+							htmlElement 'div' @{id ='riskMatrixContainer'}{
+								htmlElement 'div' @{id='dotRiskScoreTab'}{}
+								htmlElement 'div' @{id ='severity'} {
+									htmlElement 'p' @{id = 'severityArea'}{'Severity'}
+								}
+								htmlElement 'div' @{id ='quantity'} {
+									htmlElement 'p' @{id = 'quantityArea'}{'Quantity'}
+								}
+								htmlElement 'div' @{id ='severityCritical'}{"Critical"}
+								htmlElement 'div' @{id ='severityHigh'}{"High"}
+								htmlElement 'div' @{id ='severityMedium'}{"Medium"}
+								htmlElement 'div' @{id ='severityLow'}{"Low"}
+	
+								htmlElement 'div' @{id ='quantityCritical'}{"Critical"}
+								htmlElement 'div' @{id ='quantityHigh'}{"High"}
+								htmlElement 'div' @{id ='quantityMedium'}{"Medium"}
+								htmlElement 'div' @{id ='quantityLow'}{"Low"}
+	
+								#colored areas
+								htmlElement 'div' @{id ='critical_low'}{}
+								htmlElement 'div' @{id ='high_low'}{}
+								htmlElement 'div' @{id ='medium_low'}{}
+								htmlElement 'div' @{id ='low_low'}{}
+	
+								htmlElement 'div' @{id ='critical_medium'}{}
+								htmlElement 'div' @{id ='high_medium'}{}
+								htmlElement 'div' @{id ='medium_medium'}{}
+								htmlElement 'div' @{id ='low_medium'}{}
+	
+								htmlElement 'div' @{id ='critical_high'}{}
+								htmlElement 'div' @{id ='high_high'}{}
+								htmlElement 'div' @{id ='medium_high'}{}
+								htmlElement 'div' @{id ='low_high'}{}
+	
+								htmlElement 'div' @{id ='critical_critical'}{}
+								htmlElement 'div' @{id ='high_critical'}{}
+								htmlElement 'div' @{id ='medium_critical'}{}
+								htmlElement 'div' @{id ='low_critical'}{}
+							}
+	
+							htmlElement 'div' @{id='calculationTables'} {
+								htmlElement 'h3' @{class = 'calculationTablesText'} {"Risk Score Calculation"}
+								htmlElement 'p' @{class = 'calculationTablesText'} {"The calculation of the Risk Score is based on the set of compliant rules at the quantity level and also at the severity level."}
+								htmlElement 'p' @{class = 'calculationTablesText'} {"Note: The Risk Rcore is calculated by dividing all compliant rules with the total number (minus none-compliant) of rules."}
+								htmlElement 'table' @{id='quantityTable'}{
+									htmlElement 'tr' @{}{
+										htmlElement 'th' @{}{'Compliance to Benchmarks (Quantity)'}
+										htmlElement 'th' @{}{'Risk Assessment'}
+									}
+									htmlElement 'tr' @{}{
+										htmlElement 'td' @{}{'More than 80%'}
+										htmlElement 'td' @{}{'Low'}
+									}
+									htmlElement 'tr' @{}{
+										htmlElement 'td' @{}{'Between 65% and 80%'}
+										htmlElement 'td' @{}{'Medium'}
+									}
+									htmlElement 'tr' @{}{
+										htmlElement 'td' @{}{'Between 50% and 65%'}
+										htmlElement 'td' @{}{'High'}
+									}
+									htmlElement 'tr' @{}{
+										htmlElement 'td' @{}{'Less than 50%'}
+										htmlElement 'td' @{}{'Critical'}
+									}
+								}
+		
+								htmlElement 'table' @{id='severityTable'}{
+									htmlElement 'tr' @{}{
+										htmlElement 'th' @{}{'Compliance to Benchmarks (Severity)'}
+										htmlElement 'th' @{}{'Risk Assessment'}
+									}
+									htmlElement 'tr' @{}{
+										htmlElement 'td' @{}{'All critical settings compliant'}
+										htmlElement 'td' @{}{'Low'}
+									}
+									# htmlElement 'tr' @{}{
+									# 	htmlElement 'td' @{}{'70% < X < 85%'}
+									# 	htmlElement 'td' @{}{'Medium'}
+									# }
+									# htmlElement 'tr' @{}{
+									# 	htmlElement 'td' @{}{'55% < X < 70%'}
+									# 	htmlElement 'td' @{}{'High'}
+									# }
+									htmlElement 'tr' @{}{
+										htmlElement 'td' @{}{'1 or more incompliant setting(s)'}
+										htmlElement 'td' @{}{'Critical'}
+									}
+								}
+							}
+	
+	
+							htmlElement 'div' @{id ="severityCompliance"} {
+								htmlElement 'p' @{id="complianceStatus"}{'Table Of Severity Rules'}
+								htmlElement 'span' @{class="sectionAction collapseButton"; id="severityComplianceCollapse"} {"-"}
+								htmlElement 'table' @{id = 'severityDetails'}{
+									htmlElement 'tr' @{}{
+										htmlElement 'th' @{}{'Id'}
+										htmlElement 'th' @{}{'Task'}
+										htmlElement 'th' @{}{'Status'}
+										htmlElement 'th' @{}{'Severity'}
+									}
+									foreach($info in $RSReport.RSSeverityReport.AuditInfos){
+										htmlElement 'tr' @{}{
+											htmlElement 'td' @{} {"$($info.Id)"}
+											htmlElement 'td' @{} {"$($info.Task)"}
+											htmlElement 'td' @{} {
+												if($info.Status -eq 'False'){
+													htmlElement 'span' @{class="severityResultFalse"}{
+														"$($info.Status)"
+													}
+												}
+												elseif($info.Status -eq 'True'){
+													htmlElement 'span' @{class="severityResultTrue"}{
+														"$($info.Status)"
+													}
+												}
+												elseif($info.Status -eq 'None'){
+													htmlElement 'span' @{class="severityResultNone"}{
+														"$($info.Status)"
+													}
+												}
+												elseif($info.Status -eq 'Warning'){
+													htmlElement 'span' @{class="severityResultWarning"}{
+														"$($info.Status)"
+													}
+												}
+												elseif($info.Status -eq 'Error'){
+													htmlElement 'span' @{class="severityResultError"}{
+														"$($info.Status)"
+													}
+												}
+											}
+											htmlElement 'td' @{} {
+												htmlElement 'p' @{style="margin: 5px auto;"}{"Critical"}
+											}
+										}
+									}
+								}
+							}
+	
+							
+	
+	
+							# htmlElement 'h2' @{} {'Number of Successes: ' + $RSReport.RSSeverityReport.ResultTable.Success }
+							# htmlElement 'h2' @{} {'Number of Failed: ' + $RSReport.RSSeverityReport.ResultTable.Failed }
+							# htmlElement 'h2' @{} {'Endresult of Quality: ' + $RSReport.RSSeverityReport.Endresult }
+	
+							# 'Test for AuditInfo: ' + $RSReport.RSSeverityReport.TestTable
+						}
+					}
+
+					htmlElement 'div' @{class = 'tabContent'; id = 'references'}{
+						htmlElement 'h1' @{} {"About us"}
+						htmlElement 'h2' @{} {"What makes FB Pro GmbH different"}
+						htmlElement 'h3' @{} {"What do we want?"}
+						htmlElement 'p' @{} {"Protect our customers' data and information - and thus implicitly contribute to the safe use of the Internet."}
+						htmlElement 'h3' @{} {"How do we achieve this? "}
+						htmlElement 'p' @{} {"We implement in-depth IT security for our customers. And we always do so in a state-of-the-art, efficient and automated manner."}
+						htmlElement 'div'@{id="referencesContainer"}{
+							htmlElement 'div'@{}{
+								htmlElement 'h2' @{} {"Check out our hardening solution"}
+								htmlElement 'a' @{href="https://www.fb-pro.com/enforce-administrator-product/"}{
+									htmlElement 'img' @{height="200px"; width="125px"; src=$Settings.EA}{}
+								}
+
+							}
+
+							htmlElement 'div'@{}{
+								htmlElement 'h2' @{} {"Check out our Audit Report Tool here"}
+								htmlElement 'a' @{href="https://www.fb-pro.com/audit-tap-product-information/"}{
+									htmlElement 'img' @{height="200px"; width="125px"; src=$Settings.ATAP}{}		
+								}
+							}				
+						}
+						htmlElement 'footer' @{} {
+							htmlElement 'h3' @{} {"Contact us:"}
+							htmlElement 'p' @{} {"FB Pro GmbH"}
+							htmlElement 'p' @{} {"Fon: +49 6727 7559039"}
+							htmlElement 'p' @{} {"Web: ";htmlElement 'a' @{href="https://www.fb-pro.com/"} {"https://www.fb-pro.com/"}}
+							htmlElement 'p' @{} {"Mail: "; htmlElement 'a' @{href="mailto:info@fb-pro.com"} {"info@fb-pro.com"}}
+
+							htmlElement 'h3' @{} {"Can we help you? "}
+							htmlElement 'p' @{} {"Do you need support with system hardening?"}
+							htmlElement 'p' @{} {"Our team of system hardening experts will be happy to provide you with advice and support."}
+							htmlElement 'p' @{} {"Contact us for a no-obligation inquiry!"}
+							htmlElement 'a' @{href="mailto:info@fb-pro.com"} {
+								htmlElement 'button' @{id="contactUsButton"} {"CONTACT US!"}
+							}
+						}
+					}
+
+
 				}
 			}
 			htmlElement 'script' @{ type = 'text/javascript' } { @"
@@ -590,16 +1145,55 @@ for (var i = 0; i < collapseButtons.length; i++) {
 
 		$html = "<!DOCTYPE html><html lang=`"en`">$($head)$($body)</body></html> "
 
-		if(Test-Path -Path $path){
-			Write-Warning "$path already exists. $path will be overridden!"
+		$head = "
+		<head>
+			<title>A Meaningful Page Title</title>
+			<style>
+				body{
+					font-family: Cambria, Georgia, serif;
+				}
+				.header {
+					background-color: #c6c9cc;
+				}
+				.green{
+					height: 160px; width: 160px;background-color:#33cca6;
+				}
+				.red{
+					height: 160px; width: 160px;background-color:#cc0000;
+				}
+				td{
+					text-align: center;
+				}
+				table{
+					margin-left: auto;
+    				margin-right: auto;
+				}
+				.riskMatrix{
+					margin: auto;
+					width: 50%;
+				}
+				h1{
+					text-align: center;
+					margin-bottom: 25px;
+				}
+				h1 p{
+					text-align: center;
+				}
+				td {
+					border: 1px solid black;
+				}
+			</style>
+		</head>
+		"
+	
+		#If Path exists to a folder exists
+		if(Test-Path -Path $Path -PathType Container){
+			$Title = $Title -replace " Audit Report",""
+			$auditReport += "$($Title)_$(Get-Date -UFormat %Y%m%d_%H%M%S).html"
 		}
 
-		New-Item $path -ItemType File -Force
-
-
-
-		$html | Out-File $Path -Encoding utf8
-
-		Write-Verbose "Done"
+		#Create Report file
+		New-Item -Path $Path -Name $auditReport -ItemType File -Value $html  -Force 
+		#$html | Out-File -FilePath $auditReport -Encoding utf8
 	}
 }

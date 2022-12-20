@@ -72,29 +72,65 @@
 					Title = 'Account Policies'
 					AuditInfos = Test-AuditGroup "Microsoft Windows 10 SiSyPHuS NE-BSI-1.3#AccountPolicies"
 				}
+				[ReportSection] @{
+					Title = 'Security Options'
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10 SiSyPHuS NE-BSI-1.3#SecurityOptions"
+				}
 			)
 		}
+		# [ReportSection] @{
+		# 	Title = 'BSI Benchmarks SiM-08202 - BPOL'
+		# 	Description = 'This section contains the BSI Benchmark results.'
+		# 	SubSections = @(
+		# 		[ReportSection] @{
+		# 			Title = 'Registry Settings/Group Policies'
+		# 			AuditInfos = Test-AuditGroup "Microsoft Windows 10 BSI BPOL#RegistrySettings"
+		# 		}
+		# 		[ReportSection] @{
+		# 			Title = 'User Rights Assignment'
+		# 			AuditInfos = Test-AuditGroup "Microsoft Windows 10 BSI BPOL#UserRights"
+		# 		}
+		# 		[ReportSection] @{
+		# 			Title = 'Account Policies'
+		# 			AuditInfos = Test-AuditGroup "Microsoft Windows 10 BSI BPOL#AccountPolicies"
+		# 		}
+		# 		[ReportSection] @{
+		# 			Title = 'Advanced Audit Policy Configuration'
+		# 			AuditInfos = Test-AuditGroup "Microsoft Windows 10 BSI BPOL#AuditPolicies"
+		# 		}
+		# 	)
+		# }
 		[ReportSection] @{
-			Title = 'BSI Benchmarks SiM-08202 - BPOL'
+			Title = 'BSI Benchmarks SiSyPHus-BSI'
 			Description = 'This section contains the BSI Benchmark results.'
 			SubSections = @(
 				[ReportSection] @{
 					Title = 'Registry Settings/Group Policies'
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10 BSI BPOL#RegistrySettings"
-				}
-				[ReportSection] @{
-					Title = 'User Rights Assignment'
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10 BSI BPOL#UserRights"
-				}
-				[ReportSection] @{
-					Title = 'Account Policies'
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10 BSI BPOL#AccountPolicies"
-				}
-				[ReportSection] @{
-					Title = 'Advanced Audit Policy Configuration'
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10 BSI BPOL#AuditPolicies"
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10 SiSyPHus-BSI-V1.1#RegistrySettings"
 				}
 			)
 		}
+		# [ReportSection] @{
+		# 	Title = 'BSI Benchmarks SiSyPHus-BSI Bundespolizei'
+		# 	Description = 'This section contains the BSI Benchmark results.'
+		# 	SubSections = @(
+		# 		[ReportSection] @{
+		# 			Title = 'Registry Settings/Group Policies'
+		# 			AuditInfos = Test-AuditGroup "Microsoft Windows 10-BSI-Bundespolizei#RegistrySettings"
+		# 		}
+		# 		[ReportSection] @{
+		# 			Title = 'User Rights Assignment'
+		# 			AuditInfos = Test-AuditGroup "Microsoft Windows 10-BSI-Bundespolizei#UserRights"
+		# 		}
+		# 		[ReportSection] @{
+		# 			Title = 'Account Policies'
+		# 			AuditInfos = Test-AuditGroup "Microsoft Windows 10-BSI-Bundespolizei#AccountPolicies"
+		# 		}
+		# 		[ReportSection] @{
+		# 			Title = 'Advanced Audit Policy Configuration'
+		# 			AuditInfos = Test-AuditGroup "Microsoft Windows 10-BSI-Bundespolizei#AuditPolicies"
+		# 		}
+		# 	)
+		# }
 	)
 }
