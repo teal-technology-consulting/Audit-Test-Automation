@@ -32,8 +32,8 @@ AliasesToExport = @(
 PrivateData = @{
 	PSData = @{
 		Tags = @('reporting', 'auditing', 'benchmarks', 'fb-pro', 'html')
-		LicenseUri = 'https://github.com/fbprogmbh/Audit-Test-Automation/blob/master/LICENSE'
-		ProjectUri = 'https://github.com/fbprogmbh/Audit-Test-Automation'
+		LicenseUri = 'https://github.com/teal-technology-consulting/Teal-Audit-Proof/blob/master/LICENSE'
+		ProjectUri = 'https://github.com/teal-technology-consulting/Teal-Audit-Proof'
 		# IconUri = ''
 		# ReleaseNotes = ''
 
