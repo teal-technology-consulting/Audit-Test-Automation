@@ -1099,7 +1099,7 @@ function Get-ATAPHtmlReport {
 							htmlElement 'div'@{}{
 								htmlElement 'h2' @{} {"Check out our hardening solution"}
 								htmlElement 'a' @{href="https://aktionen.teal-consulting.de/enforce-suite/?utm_source=produkt-seite"}{
-									htmlElement 'img' @{height="200px"; width="125px"; src=$Settings.EA}{}
+									htmlElement 'img' @{height="200px"; width="165px"; src=$Settings.EA}{}
 								}
 
 							}
@@ -1107,7 +1107,7 @@ function Get-ATAPHtmlReport {
 							htmlElement 'div'@{}{
 								htmlElement 'h2' @{} {"Check out our Audit Report Tool here"}
 								htmlElement 'a' @{href="https://aktionen.teal-consulting.de/teal-audit-proof/?utm_source=produkt-seite"}{
-									htmlElement 'img' @{height="200px"; width="125px"; src=$Settings.ATAP}{}		
+									htmlElement 'img' @{height="200px"; width="165px"; src=$Settings.ATAP}{}		
 								}
 							}				
 						}
