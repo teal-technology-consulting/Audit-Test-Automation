@@ -17,7 +17,7 @@ ATAPAuditor:\
 			<td>
 
 AuditTAP Release 5.3:\
-[![ATAP](https://www.fb-pro.com/wp-content/uploads/2022/09/atap-download-button.png)](https://github.com/fbprogmbh/Audit-Test-Automation/archive/refs/tags/v5.3.zip)
+[![ATAP](https://www.fb-pro.com/wp-content/uploads/2022/09/atap-download-button.png)](https://github.com/teal-technology-consulting/Teal-Audit-Proof/archive/refs/heads/master.zip)
 			</td>
 		</tr>
 	</table>
@@ -231,7 +231,7 @@ Permanent scope: Machine
 
 ### AuditTAP information
 
-* GitHub-Link: https://github.com/fbprogmbh/Audit-Test-Automation
+* GitHub-Link: https://github.com/teal-technology-consulting/Teal-Audit-Proof
 * AuditTAP landing page: https://www.fb-pro.com/audit-tap-product-information
 * YouTube channel with more videos: https://www.youtube.com/channel/UCFolaYgClJ005glpn5owRUg
 

@@ -1088,15 +1088,17 @@ function Get-ATAPHtmlReport {
 
 					htmlElement 'div' @{class = 'tabContent'; id = 'references'}{
 						htmlElement 'h1' @{} {"About us"}
-						htmlElement 'h2' @{} {"What makes FB Pro GmbH different"}
+						htmlElement 'h2' @{} {"Why TEAL and what makes us special"}
 						htmlElement 'h3' @{} {"What do we want?"}
-						htmlElement 'p' @{} {"Protect our customers' data and information - and thus implicitly contribute to the safe use of the Internet."}
+						htmlElement 'p' @{} {"Enable you to easily get started securing your infrastructure, known as system-hardening, and securely configure applications, clients, servers, and cloud systems."}
 						htmlElement 'h3' @{} {"How do we achieve this? "}
-						htmlElement 'p' @{} {"We implement in-depth IT security for our customers. And we always do so in a state-of-the-art, efficient and automated manner."}
+						htmlElement 'p' @{} {"You receive a documented overview of the conformity / non-conformity of explicit settings, which supports you in the implementation and adherence to compliance processes.
+
+						We rely on testing against common industry standards such as those of the German Federal Office for Information Security (BSI), the Center of Internet Security (CIS) or manufacturers such as Microsoft. We rely on an experienced team of Technology Consultants and our long-standing experience."}
 						htmlElement 'div'@{id="referencesContainer"}{
 							htmlElement 'div'@{}{
 								htmlElement 'h2' @{} {"Check out our hardening solution"}
-								htmlElement 'a' @{href="https://www.fb-pro.com/enforce-administrator-product/"}{
+								htmlElement 'a' @{href="https://aktionen.teal-consulting.de/enforce-suite/?utm_source=produkt-seite"}{
 									htmlElement 'img' @{height="200px"; width="125px"; src=$Settings.EA}{}
 								}
 
@@ -1104,7 +1106,7 @@ function Get-ATAPHtmlReport {
 
 							htmlElement 'div'@{}{
 								htmlElement 'h2' @{} {"Check out our Audit Report Tool here"}
-								htmlElement 'a' @{href="https://www.fb-pro.com/audit-tap-product-information/"}{
+								htmlElement 'a' @{href="https://aktionen.teal-consulting.de/teal-audit-proof/?utm_source=produkt-seite"}{
 									htmlElement 'img' @{height="200px"; width="125px"; src=$Settings.ATAP}{}		
 								}
 							}				
@@ -1113,14 +1115,14 @@ function Get-ATAPHtmlReport {
 							htmlElement 'h3' @{} {"Contact us:"}
 							htmlElement 'p' @{} {"FB Pro GmbH"}
 							htmlElement 'p' @{} {"Fon: +49 6727 7559039"}
-							htmlElement 'p' @{} {"Web: ";htmlElement 'a' @{href="https://www.fb-pro.com/"} {"https://www.fb-pro.com/"}}
-							htmlElement 'p' @{} {"Mail: "; htmlElement 'a' @{href="mailto:info@fb-pro.com"} {"info@fb-pro.com"}}
+							htmlElement 'p' @{} {"Web: ";htmlElement 'a' @{href="https://www.teal-consulting.de/"} {"https://www.teal-consulting.de/"}}
+							htmlElement 'p' @{} {"Mail: "; htmlElement 'a' @{href="info@teal-consulting.de"} {"info@teal-consulting.de"}}
 
 							htmlElement 'h3' @{} {"Can we help you? "}
 							htmlElement 'p' @{} {"Do you need support with system hardening?"}
 							htmlElement 'p' @{} {"Our team of system hardening experts will be happy to provide you with advice and support."}
 							htmlElement 'p' @{} {"Contact us for a no-obligation inquiry!"}
-							htmlElement 'a' @{href="mailto:info@fb-pro.com"} {
+							htmlElement 'a' @{href="info@teal-consulting.de"} {
 								htmlElement 'button' @{id="contactUsButton"} {"CONTACT US!"}
 							}
 						}
