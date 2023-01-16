@@ -1113,8 +1113,8 @@ function Get-ATAPHtmlReport {
 						}
 						htmlElement 'footer' @{} {
 							htmlElement 'h3' @{} {"Contact us:"}
-							htmlElement 'p' @{} {"FB Pro GmbH"}
-							htmlElement 'p' @{} {"Fon: +49 6727 7559039"}
+							htmlElement 'p' @{} {"TEAL Technology Consulting GmbH"}
+							htmlElement 'p' @{} {"Fon: 0211 93675225"}
 							htmlElement 'p' @{} {"Web: ";htmlElement 'a' @{href="https://www.teal-consulting.de/"} {"https://www.teal-consulting.de/"}}
 							htmlElement 'p' @{} {"Mail: "; htmlElement 'a' @{href="info@teal-consulting.de"} {"info@teal-consulting.de"}}
 
