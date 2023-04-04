@@ -187,21 +187,21 @@ function calcDotPosition(){
     riskResult.style.display = "contents";
     if(totalComplianceValue == 1){
         riskResult.innerText = "Low";
-        riskResult.style.backgroundColor = "#548dd6";
+        riskResult.style.backgroundColor = "#00B050";
     }
     else if(totalComplianceValue == 2){
         riskResult.innerText = "Medium";
-        riskResult.style.backgroundColor = "#ffc000";
+        riskResult.style.backgroundColor = "#FFFF00";
     }
     else if(totalComplianceValue == 3){
         riskResult.innerText = "High";
         riskResult.style.color = "white";
-        riskResult.style.backgroundColor = "#cc0000";
+        riskResult.style.backgroundColor = "#FFC000";
     }
     else{
         riskResult.innerText = "Critical";
         riskResult.style.color = "white";
-        riskResult.style.backgroundColor = "purple";
+        riskResult.style.backgroundColor = "#FF0000";
     }
     riskResult.style.display = "inline";
     riskResult.style.padding = "5px 10px";
