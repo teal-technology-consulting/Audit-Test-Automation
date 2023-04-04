@@ -1250,7 +1250,7 @@ function Get-ATAPHtmlReport {
 
 							htmlElement 'div'@{}{
 								htmlElement 'h2' @{} {"Check out our Audit Report Tool here"}
-								htmlElement 'a' @{href="aktionen.teal-consulting.de/teal-audit-proof/?utm_source=produkt-seite"}{
+								htmlElement 'a' @{href="https://aktionen.teal-consulting.de/teal-audit-proof/?utm_source=produkt-seite"}{
 									htmlElement 'img' @{height="200px"; width="165px"; src=$Settings.ATAP}{}		
 								}
 							}				
@@ -1260,13 +1260,13 @@ function Get-ATAPHtmlReport {
 							htmlElement 'p' @{} {"Teal Technology Consulting GmbH"}
 							htmlElement 'p' @{} {"Fon: 0211 93675225"}
 							htmlElement 'p' @{} {"Web: ";htmlElement 'a' @{href="https://www.teal-consulting.de/"} {"https://www.teal-consulting.de/"}}
-							htmlElement 'p' @{} {"Mail: "; htmlElement 'a' @{href="info@teal-consulting.de"} {"info@teal-consulting.de"}}
+							htmlElement 'p' @{} {"Mail: "; htmlElement 'a' @{href="info@teal-consulting.de"} {"https://info@teal-consulting.de"}}
 
 							htmlElement 'h3' @{} {"Can we help you? "}
 							htmlElement 'p' @{} {"Do you need support with system hardening?"}
 							htmlElement 'p' @{} {"Our team of system hardening experts will be happy to provide you with advice and support."}
 							htmlElement 'p' @{} {"Contact us for a no-obligation inquiry!"}
-							htmlElement 'a' @{href="info@teal-consulting.de"} {
+							htmlElement 'a' @{href="https://info@teal-consulting.de"} {
 								htmlElement 'button' @{id="contactUsButton"} {"CONTACT US!"}
 							}
 						}
