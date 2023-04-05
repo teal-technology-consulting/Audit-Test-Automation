@@ -2,11 +2,11 @@
 	Title = "Privileged Access Workstation Windows 10 Report"
 	ModuleName = "ATAPAuditor"
 	BasedOn = @(
-		"CIS Microsoft Windows 10 Enterprise Release 2004 Benchmark, Version: 1.9.0, Date: 2020-08-14"
+		"CIS Microsoft Windows 10 Enterprise Release 21H1 Benchmark, Version: 1.12.0, Date: 2022-02-15"
 		"CIS Google Chrome Benchmark, Version: 2.0.0, Date: 2019-05-17"
 		'CIS Mozilla Firefox 38 ESR Benchmark, Version: 1.0.0, Date: 2015-12-31'
-		"Microsoft Security baseline (FINAL) for Windows 10, Version: 20H2, Date: 2020-12-17"
-		"Microsoft Edge v85 Security Baseline FINAL, Version: 85, Date: 2020-08-27"
+		"Microsoft Security baseline (FINAL) for Windows 10, Version: 21H1, Date: 2021-05-18"
+		"Microsoft Edge v99 Security Baseline FINAL, Version: 99, Date: 2022-03-07"
 		"SiSyPHuS Windows 10 - Telemetry components - Bundesamt fuer Sicherheit in der Informationstechnik (BSI), Version: V1.1, Date: 2019-07-31"
 		"BSI SiM-08202 Client unter Windows 10, Version: 1, Date: 2017-09-13"
 
