@@ -18,7 +18,7 @@ ATAPAuditor:\
 
 
 AuditTAP Release 5.5:\
-[![ATAP](https://www.fb-pro.com/wp-content/uploads/2022/09/atap-download-button.png)](https://github.com/teal-technology-consulting/Teal-Audit-Proof/archive/refs/heads/master.zip)
+[![ATAP](https://aktionen.teal-consulting.de/wp-content/uploads/2023/04/tap-button.png)](https://github.com/teal-technology-consulting/Teal-Audit-Proof/archive/refs/heads/master.zip)
 			</td>
 		</tr>
 	</table>
@@ -124,7 +124,7 @@ The first half of the video guides through the process of manual installation, t
 
 <div align="center">
    <a href="https://www.youtube.com/watch?v=MfMs1bTjR1I">
-     <img src="https://img.youtube.com/vi/5fJGdHCxqpM/0.jpg" 
+     <img src="https://aktionen.teal-consulting.de/wp-content/uploads/2023/04/tap-video-thumbnail.jpg" 
       alt="How to get a transparent system hardening report?" 
      >
    </a>
