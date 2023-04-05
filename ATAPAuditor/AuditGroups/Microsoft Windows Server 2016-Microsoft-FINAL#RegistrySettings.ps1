@@ -1,5 +1,7 @@
 ﻿$RootPath = Split-Path $MyInvocation.MyCommand.Path -Parent
 $RootPath = Split-Path $RootPath -Parent
+. "$RootPath\Helpers\AuditGroupFunctions.ps1"
+$windefrunning = CheckWindefRunning
 . "$RootPath\Helpers\Firewall.ps1"
 [AuditTest] @{
     Id = "Registry-001"
@@ -1442,6 +1444,9 @@ $RootPath = Split-Path $RootPath -Parent
 [AuditTest] @{
     Id = "Registry-041"
     Task = "Domain: Set registry value 'DefaultOutboundAction' to 0."
+    Constraints = @(
+        @{ "Property" = "DomainRole"; "Values" = "Member Workstation", "Member Server", "Primary Domain Controller", "Backup Domain Controller"}
+    )
     Test = {
         $path1 = "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\WindowsFirewall\DomainProfile"
         $path2 = "Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile"       
@@ -1458,6 +1463,9 @@ $RootPath = Split-Path $RootPath -Parent
 [AuditTest] @{
     Id = "Registry-042"
     Task = "Domain: Set registry value 'DefaultInboundAction' to 1."
+    Constraints = @(
+        @{ "Property" = "DomainRole"; "Values" = "Member Workstation", "Member Server", "Primary Domain Controller", "Backup Domain Controller"}
+    )
     Test = {
         $path1 = "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\WindowsFirewall\DomainProfile"
         $path2 = "Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile"       
@@ -1474,6 +1482,9 @@ $RootPath = Split-Path $RootPath -Parent
 [AuditTest] @{
     Id = "Registry-043"
     Task = "Domain: Set registry value 'EnableFirewall' to 1."
+    Constraints = @(
+        @{ "Property" = "DomainRole"; "Values" = "Member Workstation", "Member Server", "Primary Domain Controller", "Backup Domain Controller"}
+    )
     Test = {
         $path1 = "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\WindowsFirewall\DomainProfile";
         $path2 = "Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile";
@@ -3208,6 +3219,12 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Turn off Windows Defender' is set to 'Disabled'."
     Test = {
         try {
+            if ((-not $windefrunning)) {
+                return @{
+                    Message = "This rule requires Windows Defender Antivirus to be enabled."
+                    Status = "None"
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender" `
                 -Name "DisableAntiSpyware" `
@@ -3244,6 +3261,12 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Turn on behavior monitoring' is set to 'Enabled'."
     Test = {
         try {
+            if ((-not $windefrunning)) {
+                return @{
+                    Message = "This rule requires Windows Defender Antivirus to be enabled."
+                    Status = "None"
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" `
                 -Name "DisableBehaviorMonitoring" `
@@ -3280,6 +3303,12 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Scan removable drives' is set to 'Enabled'."
     Test = {
         try {
+            if ((-not $windefrunning)) {
+                return @{
+                    Message = "This rule requires Windows Defender Antivirus to be enabled."
+                    Status = "None"
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Scan" `
                 -Name "DisableRemovableDriveScanning" `
@@ -3316,6 +3345,12 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Turn on e-mail scanning' is set to 'Enabled'."
     Test = {
         try {
+            if ((-not $windefrunning)) {
+                return @{
+                    Message = "This rule requires Windows Defender Antivirus to be enabled."
+                    Status = "None"
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Scan" `
                 -Name "DisableEmailScanning" `
@@ -3352,6 +3387,12 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure local setting override for reporting to Microsoft MAPS' is set to 'Disabled'."
     Test = {
         try {
+            if ((-not $windefrunning)) {
+                return @{
+                    Message = "This rule requires Windows Defender Antivirus to be enabled."
+                    Status = "None"
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Spynet" `
                 -Name "LocalSettingOverrideSpynetReporting" `
@@ -3388,6 +3429,12 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Send file samples when further analysis is required' is set to 'Send safe samples'."
     Test = {
         try {
+            if ((-not $windefrunning)) {
+                return @{
+                    Message = "This rule requires Windows Defender Antivirus to be enabled."
+                    Status = "None"
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Spynet" `
                 -Name "SubmitSamplesConsent" `
@@ -3424,6 +3471,12 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Join Microsoft MAPS' is set to 'Advanced MAPS'."
     Test = {
         try {
+            if ((-not $windefrunning)) {
+                return @{
+                    Message = "This rule requires Windows Defender Antivirus to be enabled."
+                    Status = "None"
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Spynet" `
                 -Name "SpynetReporting" `

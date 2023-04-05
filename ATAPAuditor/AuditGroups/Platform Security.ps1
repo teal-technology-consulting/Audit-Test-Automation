@@ -1,23 +1,6 @@
-function isWindows8OrNewer {
-	return ([Environment]::OSVersion.Version -ge (New-Object 'Version' 6,2))
-}
-function isWindows81OrNewer {
-	return ([Environment]::OSVersion.Version -ge (New-Object 'Version' 6,3))
-}
-function isWindows10OrNewer {
-	return ([Environment]::OSVersion.Version -ge (New-Object 'Version' 10,0))
-}
-function win7NoTPMChipDetected {
-	return (Get-CimInstance -ClassName Win32_Tpm -Namespace root\cimv2\security\microsofttpm | Select-Object -ExpandProperty IsActivated_InitialValue) -eq $null
-}
-function hasTPM {
-	try {
-		$obj = (Get-Tpm).TpmPresent
-	} catch {
-		return $null
-	}
-	return $obj
-}
+$RootPath = Split-Path $MyInvocation.MyCommand.Path -Parent
+$RootPath = Split-Path $RootPath -Parent
+. "$RootPath\Helpers\AuditGroupFunctions.ps1"
 [AuditTest] @{
 	Id = "SBD-001"
 	Task = "Ensure the system is booting in 'UEFI' mode."
@@ -240,28 +223,18 @@ function hasTPM {
 			}
 		}
 		if (isWindows8OrNewer) {
-			$obj = (Get-Tpm).TpmEnabled
-			if ($obj -isnot [Boolean]) {
+			
+			$state =  Get-WmiObject -class Win32_Tpm -namespace root\CIMV2\Security\MicrosoftTpm
+			if ($state.IsEnabled_InitialValue -eq $true) {
 				return @{
-					Message = "Cannot get 'enabled' status of TPM."
-					Status = "Error"
+					Message = "Compliant"
+					Status = "True"
 				}
 			}
-			$status = switch ($obj) {
-				$true {
-					@{
-						Message = "Compliant"
-						Status = "True"
-					}
-				}
-				$false {
-					@{
-						Message = "The TPM Chip is not 'enabled'."
-						Status = "False"
-					}
-				}
+			return @{
+				Message = "The TPM Chip is not 'enabled'."
+				Status = "False"
 			}
-			return $status
 		}
 		else {
 			if (win7NoTPMChipDetected) {
@@ -297,28 +270,17 @@ function hasTPM {
 			}
 		}
 		if (isWindows8OrNewer) {
-			$obj = (Get-Tpm).TpmActivated
-			if ($obj -isnot [Boolean]) {
+			$state =  Get-WmiObject -class Win32_Tpm -namespace root\CIMV2\Security\MicrosoftTpm
+			if ($state.IsActivated_InitialValue -eq $true) {
 				return @{
-					Message = "Cannot get 'activated' status of TPM."
-					Status = "Error"
+					Message = "Compliant"
+					Status = "True"
 				}
 			}
-			$status = switch ($obj) {
-				$true {
-					@{
-						Message = "Compliant"
-						Status = "True"
-					}
-				}
-				$false {
-					@{
-						Message = "The TPM Chip is not 'activated'."
-						Status = "False"
-					}
-				}
+			return @{
+				Message = "The TPM Chip is not 'enabled'."
+				Status = "False"
 			}
-			return $status
 		}
 		else {
 			if (win7NoTPMChipDetected) {
@@ -354,29 +316,17 @@ function hasTPM {
 			}
 		}
 		if (isWindows8OrNewer) {
-			$obj = (Get-Tpm).TpmOwned
-			if ($obj -isnot [Boolean]) {
+			$state =  Get-WmiObject -class Win32_Tpm -namespace root\CIMV2\Security\MicrosoftTpm
+			if ($state.IsOwned_InitialValue -eq $true) {
 				return @{
-					Message = "Cannot get 'owned' status of TPM."
-					Status = "Error"
+					Message = "Compliant"
+					Status = "True"
 				}
 			}
-
-			$status = switch ($obj) {
-				$true {
-					@{
-						Message = "Compliant"
-						Status = "True"
-					}
-				}
-				$false {
-					@{
-						Message = "The TPM Chip is not 'owned'."
-						Status = "False"
-					}
-				}
+			return @{
+				Message = "The TPM Chip is not 'enabled'."
+				Status = "False"
 			}
-			return $status
 		}
 		else {
 			if (win7NoTPMChipDetected) {

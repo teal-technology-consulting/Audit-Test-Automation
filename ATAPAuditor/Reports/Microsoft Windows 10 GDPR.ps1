@@ -2,8 +2,10 @@
 	Title = "Windows 10 GDPR Report"
 	ModuleName = "ATAPAuditor"
 	BasedOn = @(
-		'Bundesamt für Sicherheit in der Informationstechnik (BSI), Version: V1.1, Date: 2019-07-31'
+		'Bundesamt für Sicherheit in der Informationstechnik (BSI), Version: V1.2, Date: 2020-04-27'
 		'GDPR settings by Microsoft, Version: 16082019, Date: 2019-08-16'
+		"TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+		"TEAL recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
 	)
 	Sections = @(
 		[ReportSection] @{
@@ -12,7 +14,7 @@
 			SubSections = @(
 				[ReportSection] @{
 					Title = "Telemetry"
-					AuditInfos = Test-AuditGroup "Microsoft Windows 10 GDPR-BSI-V1.1#RegistrySettings"
+					AuditInfos = Test-AuditGroup "Microsoft Windows 10 SiSyPHus-Telemetrie-BSI-V1.2#RegistrySettings"
 				}
 			)
 		}
@@ -23,6 +25,20 @@
 				[ReportSection] @{
 					Title = "Registry Settings"
 					AuditInfos = Test-AuditGroup "Microsoft Windows 10 GDPR-MS-16082019#RegistrySettings"
+				}
+			)
+		}
+		[ReportSection] @{
+			Title = 'TEAL recommendations'
+			Description = 'This section contains the TEAL recommendations.'
+			SubSections = @(
+				[ReportSection] @{
+					Title = 'Ciphers Suites and Hashes'
+					AuditInfos = Test-AuditGroup "CiphersProtocolsHashesBenchmark-FBPro-1.1.0#RegistrySettings"
+				}
+				[ReportSection] @{
+					Title = 'Enhanced security settings'
+					AuditInfos = Test-AuditGroup "Enhanced security settings-FBPro-1.0#UserRights"
 				}
 			)
 		}

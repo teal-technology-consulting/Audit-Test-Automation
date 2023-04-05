@@ -16,8 +16,9 @@ ATAPAuditor:\
 			</td>
 			<td>
 
-AuditTAP Release 5.3:\
-[![ATAP](https://www.fb-pro.com/wp-content/uploads/2022/09/atap-download-button.png)](https://github.com/teal-technology-consulting/Teal-Audit-Proof/archive/refs/heads/master.zip)
+
+AuditTAP Release 5.5:\
+[![ATAP](https://aktionen.teal-consulting.de/wp-content/uploads/2023/04/tap-button.png)](https://github.com/teal-technology-consulting/Teal-Audit-Proof/archive/refs/heads/master.zip)
 			</td>
 		</tr>
 	</table>
@@ -47,10 +48,12 @@ How to read the table below:
 * The entries in the **BSI** column specify the version of the BSI benchmark that is used.
 * The entries in the **ACSC** column specify the version of the ACSC benchmark that is used.
 
+We currently support the following reports, based on these topics:
+
+### **Application**
+
 Report | DISA | CIS | Microsoft | BSI | ACSC
 --------- | -----| --- | -- | --- | ---
-Debian 10 | - | - | - | - | -
-Fedora 35 | - | - | - | - | -
 Google Chrome | V1R15 | 2.0.0 | - | - | -
 Mozilla Firefox | V4R24 | 1.0.0 | - | - | -
 Microsoft Edge | - | - | 99 | - | -
@@ -62,22 +65,35 @@ Microsoft Office 2016 PowerPoint | V1R1 | - | - | - | -
 Microsoft Office 2016 SkypeForBusiness | V1R1 | - | - | - | -
 Microsoft Office 2016 Word | V1R1 | - | - | - | -
 Microsoft Office 2016 | V1R1, V1R2 | 1.1.0 | - | - | -
+
+### **Microsoft OS**
+
+Report | DISA | CIS | Microsoft | BSI | ACSC
+--------- | -----| --- | -- | --- | ---
 Microsoft SQL Server 2016 | - | 1.3.0 | - | - | -
 Microsoft Windows 7 | - | 3.1.0 | - | - | -
-Microsoft Windows 10 | V1R16 | 1.12.0 | 21H1 | SiM-08202, SiSyPHuS 1.3 | 10.2021
+Microsoft Windows 10 | V1R23 | 1.12.0 | 21H1 | SiSyPHuS 1.3 | 21H1
 Microsoft Windows 10 GDPR | - | - | 16082019 | V1.1 | -
-Microsoft Windows 10 BSI | - | - | - | SiM-08202, SiSyPHuS 1.3 | -
-Microsoft Windows 10 Complete | V1R16 | 1.12.0 | 21H1 | SiM-08202, SiSyPHuS 1.3 | 10.2021
-Microsoft Windows 11 | - | 1.0.0 | 20H2 | SiM-08202, SiSyPHuS 1.3 | -
-Microsoft Windows Server 2012 R2 | 2.19 | 2.5.0 | - | - | -
-Microsoft Windows Server 2016 | 1.12 | 1.2.0 | FINAL | - | -
-Microsoft Windows Server 2016 DC | V1R6 | 1.2.0 | FINAL | - | -
+Microsoft Windows 10 BSI | - | - | - | BPOL - SiM-08202, SiSyPHuS 1.3 | -
+Microsoft Windows 10 Stand-alone | - | Stand-alone 1.0.1 | - | SiSyPHuS 1.3 (Stand-alone) | -
+Microsoft Windows 10 PAW | Windows 10 V1R23, Chrome V1R15 | Windows 10 1.12.0, Google Chrome 2.0.0, Firefox 1.0.0 | Windows 10 21H2, Windows 10 16082019, Edge 99 | SiM-08202, SiSyPHuS Version March 2021 (HD, ND, NE, Logging), SiSyPHuS 1.3 | 21H1
+Microsoft Windows 11 Stand-alone | - | Stand-alone 1.0.1 | - | SiSyPHuS 1.3 (Stand-alone) | -
+Microsoft Windows 11 | - | 1.0.0 | 20H2 | SiSyPHuS 1.3 | -
+Microsoft Windows Server 2012 | 2.19 | 2.6.0 | - | - | -
+Microsoft Windows Server 2016 | 1.12 | 1.4.0 | FINAL | - | -
+Microsoft Windows Server 2016 DC | V1R6 | 1.4.0 | FINAL | - | -
 Microsoft Windows Server 2019 | 1.5 | 1.3.0 | FINAL | - | -
 Microsoft Windows Server 2019 DC | V1R2 | 1.1.0 | FINAL | - | -
-Microsoft Windows Server 2022 | - | 1.0.0 | FINAL | - | -
+Microsoft Windows Server 2022 | V1R1 | 1.0.0 | FINAL | - | -
+
+### **Unix OS**
+
+Report | DISA | CIS | Microsoft | BSI | ACSC
+--------- | -----| --- | -- | --- | ---
+Debian 10 | - | - | - | - | -
+Fedora 35 | - | - | - | - | -
 Red Hat Enterprise Linux 8 | - | - | - | - | -
 Ubuntu 20.04 | - | - | - | - | -
-Windows PAW | Windows 10 V1R16, Google Chrome V1R15 | Windows 10 1.9.0, Google Chrome 2.0.0, Firefox 1.0.0 | Windows 10 21H2, Windows 10 16082019, Edge 85 | SiM-08202, SiSyPHuS Version March 2021 (HD, ND, NE, Logging) | 10.2021
 
 The report *Microsoft Office 2016* aggregates the results of all *Microsoft Office 2016 \<Product>* reports.  
 The report *Microsoft Windows 10 BSI* aggregates the results of all *BSI recommendations for Microsoft Windows 10* reports.
@@ -92,31 +108,35 @@ Short explanation for BSI (see related links):
 We offer several ways of how you can use our free of charge AuditTAP. 
 Find several detailed explanations below and use them as follows:
 
-* Manual installation - use the manual way in case you do not have internet connectivity on the system you want to check. We are aware of these "non connected" scenarios for example in datacenter environments.
 * Installation via PSGallery - just install our package directly from PowerShell Gallery.
+* Manual installation - use the manual way in case you do not have internet connectivity on the system you want to check. We are aware of these "non connected" scenarios for example in datacenter environments.
 * New::star:Use our installer to install or update AuditTAP :star:
 
-### Video tutorial
+### Installation from PS Gallery
+Simple and straight-forward. Install AuditTAP with a single line of code.
+```PowerShell
+Install-Module -Name ATAPAuditor
+```
+
+### Video tutorial for manual installation
 Following the well-known phrase "A picture is worth a thousand words" we visualized AuditTAP-installation in a roughly three minute video.
 The first half of the video guides through the process of manual installation, the second half shows installation via PowerShell Gallery.
 
 <div align="center">
-   <a href="https://www.youtube-nocookie.com/embed/5fJGdHCxqpM">
-     <img src="https://img.youtube.com/vi/5fJGdHCxqpM/0.jpg" 
+   <a href="https://www.youtube.com/watch?v=MfMs1bTjR1I">
+     <img src="https://aktionen.teal-consulting.de/wp-content/uploads/2023/04/tap-video-thumbnail.jpg" 
       alt="How to get a transparent system hardening report?" 
      >
    </a>
 </div>
 
-### Manual Installation
-
 See the [Installing a PowerShell module](https://docs.microsoft.com/en-us/PowerShell/scripting/developer/module/installing-a-PowerShell-module) guide for more specific instructions.
 
-1. Download the most [recent release](https://github.com/fbprogmbh/Audit-Test-Automation/releases/latest)
+1. Download the most [recent release](https://github.com/teal-technology-consulting/Teal-Audit-Proof/releases/latest)
 2. In case your systems security configuration prevents direct execution / access on internet based ("untrusted") files you may need to "unblock" the file first. 
 
 ```PowerShell
-Unblock-File -Path .\Audit-Test-Automation-5.3.zip -Verbose
+Unblock-File -Path .\Audit-Test-Automation-5.5.zip -Verbose
 ```
 The following screenshot shows the output:
 
@@ -126,19 +146,14 @@ The following screenshot shows the output:
 When using PowerShell, please check correct version number with below code example.
 
 ```PowerShell
-Expand-Archive -Path ".\Audit-Test-Automation-5.3.zip" -DestinationPath "AuditTAP"
+Expand-Archive -Path ".\Audit-Test-Automation-5.5.zip" -DestinationPath "AuditTAP"
 ```
 4. Copy `ATAPAuditor` and `ATAPHtmlReport` modules to any of the paths of `$env:PSModulePath`.
 
-### Installation from PS Gallery
-Simple and straight-forward. Install AuditTAP with a single line of code.
-```PowerShell
-Install-Module -Name ATAPAuditor
-```
 
 ### Installer
 
-Download the installer from the [releases](https://github.com/fbprogmbh/Audit-Test-Automation/releases) page. The wizard will guide you through the installation steps to install the necessary modules, along with a convenient Start-menu shortcut.
+Download the installer from the [releases](https://github.com/teal-technology-consulting/Teal-Audit-Proof/releases) page. The wizard will guide you through the installation steps to install the necessary modules, along with a convenient Start-menu shortcut.
 
 ### Linux
 For usage on Linux systems a PowerShell installation is required. The necessary steps depend on the Linux distribution and is documented [here](https://docs.microsoft.com/en-us/PowerShell/scripting/install/installing-PowerShell-on-linux). Once PowerShell is installed proceed with a [manual](#manual-installation) installation or using [PS Gallery](#installation-from-ps-gallery).
@@ -155,15 +170,32 @@ By default the module creates a new report in `Documents\ATAPReports` folder. A 
 
 **Examples:**
 ```PowerShell
-Save-ATAPHtmlReport -ReportName "Microsoft Windows 10 Complete" -RiskScore -Path C:\Temp\report.html -DarkMode
-Save-ATAPHtmlReport -ReportName "Microsoft Windows 10 BSI" -RiskScore -Path C:\Temp -DarkMode 
-Save-ATAPHtmlReport -ReportName "Microsoft Windows Server 2022" -Path C:\Temp -DarkMode 
+Save-ATAPHtmlReport -ReportName "Microsoft Windows 11 Stand-alone" -RiskScore -Path C:\Temp\report.html
+Save-ATAPHtmlReport -ReportName "Microsoft Windows 10" -RiskScore -Path C:\Temp\report.html
+Save-ATAPHtmlReport -ReportName "Microsoft Windows 11" -Path C:\Temp\report.html
+Save-ATAPHtmlReport -ReportName "Microsoft Windows 10 BSI" -RiskScore -Path C:\Temp
+Save-ATAPHtmlReport -ReportName "Microsoft Windows Server 2022" -Path C:\Temp
 Save-ATAPHtmlReport -ReportName "Google Chrome"
-Save-ATAPHtmlReport -ReportName "Ubuntu 20.04" -DarkMode
+Save-ATAPHtmlReport -ReportName "Ubuntu 20.04"
 ```
 Pro-Tip: After typing *Save-ATAPHtmlReport -ReportName*, use the keyboard shortcut `<ctrl>` + `<space>` to display all available parameters and select the desired  report using arrow-keys.
 
 The `ATAPAuditor` module also provides a simple menu based runner for reports. It can be found in `ATAPAuditor\Helpers\Menu.ps1`. When using the Windows based installer, a shortcut can be found in the start menu.
+
+## How to Update
+In order to update AuditTAP, you need to update both modules "ATAPAuditor" and "ATAPHtmlReport". To do that, just run the following line of code:
+
+For updating ATAPAuditor:
+```PowerShell
+Update-Module ATAPAuditor
+```
+
+For updating ATAPHtmlReport:
+```PowerShell
+Update-Module ATAPHtmlReport
+```
+
+If you want to update via Installer, make sure to download the latest version of AuditTAP. Then just follow the installation steps.
 
 ## Good to know
 
@@ -204,6 +236,7 @@ ForEach ($item in $collection)
 }
 ```
 
+
 ## Sample reports
 
 You can find several sample reports in the "Samples" folder.
@@ -234,10 +267,11 @@ Permanent scope: Machine
 * GitHub-Link: https://github.com/teal-technology-consulting/Teal-Audit-Proof
 * AuditTAP landing page: https://aktionen.teal-consulting.de/teal-audit-proof/?utm_source=produkt-seite
 * YouTube channel with more videos: https://www.youtube.com/channel/UCFolaYgClJ005glpn5owRUg
+* For the installer we are using the free Inno Setup for Windows provided by Jordan Russell and Martijn Laan. https://jrsoftware.org/isinfo.php
 
 ### Hardening recommendations in general
 * #NoCodeHardening: https://www.nocodehardening.com
-* BSI SiSyPHus: https://www.bsi.bund.de/EN/Topics/Cyber-Security/Recommendations/SiSyPHuS_Win10/SiSyPHuS_node.html
+* BSI SiSyPHus: [https://www.bsi.bund.de/EN/Topics/Cyber-Security/Recommendations/SiSyPHuS_Win10/SiSyPHuS_node.html](https://www.bsi.bund.de/EN/Service-Navi/Publikationen/Studien/SiSyPHuS_Win10/SiSyPHuS.html)
 * Center for Internet Security: https://www.cisecurity.org/
 * DISA STIGs: https://public.cyber.mil/stigs/
 * Microsoft Security baselines: https://techcommunity.microsoft.com/t5/microsoft-security-baselines/bg-p/Microsoft-Security-Baselines

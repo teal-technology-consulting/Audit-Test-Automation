@@ -1,72 +1,82 @@
-﻿[AuditTest] @{
-    Id = "3.1.1 A"
-    Task = "Configuration of the lowest possible telemetry-level (Enterprise Windows 10)"
-    Test = {
-        try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\DataCollection" `
-                -Name "AllowTelemetry" `
-                | Select-Object -ExpandProperty "AllowTelemetry"
-        
-            if ($regValue -ne 0) {
+﻿$RootPath = Split-Path $MyInvocation.MyCommand.Path -Parent
+$RootPath = Split-Path $RootPath -Parent
+. "$RootPath\Helpers\AuditGroupFunctions.ps1"
+$avstatus = CheckForActiveAV
+$windefrunning = CheckWindefRunning
+if((Get-WmiObject -class Win32_OperatingSystem).Caption -eq "Microsoft Windows 10 Enterprise Evaluation" -or 
+(Get-WmiObject -class Win32_OperatingSystem).Caption -eq "Microsoft Windows 10 Enterprise"){
+    [AuditTest] @{
+        Id = "3.1.1"
+        Task = "Configuration of the lowest possible telemetry-level (Enterprise Windows 10)"
+        Test = {
+            try {
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\DataCollection" `
+                    -Name "AllowTelemetry" `
+                    | Select-Object -ExpandProperty "AllowTelemetry"
+            
+                if ($regValue -ne 0) {
+                    return @{
+                        Message = "Registry value is '$regValue'. Expected: 0"
+                        Status = "False"
+                    }
+                }
+            }
+            catch [System.Management.Automation.PSArgumentException] {
                 return @{
-                    Message = "Registry value is '$regValue'. Expected: 0"
+                    Message = "Registry value not found."
                     Status = "False"
                 }
             }
-        }
-        catch [System.Management.Automation.PSArgumentException] {
-            return @{
-                Message = "Registry value not found."
-                Status = "False"
+            catch [System.Management.Automation.ItemNotFoundException] {
+                return @{
+                    Message = "Registry key not found."
+                    Status = "False"
+                }
             }
-        }
-        catch [System.Management.Automation.ItemNotFoundException] {
+            
             return @{
-                Message = "Registry key not found."
-                Status = "False"
+                Message = "Compliant"
+                Status = "True"
             }
-        }
-        
-        return @{
-            Message = "Compliant"
-            Status = "True"
         }
     }
 }
-[AuditTest] @{
-    Id = "3.1.1 B"
-    Task = "Configuration of the lowest possible telemetry-level (Non-Enterprise Windows 10)"
-    Test = {
-        try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\DataCollection" `
-                -Name "AllowTelemetry" `
-                | Select-Object -ExpandProperty "AllowTelemetry"
-        
-            if ($regValue -ne 1) {
+else{
+    [AuditTest] @{
+        Id = "3.1.1"
+        Task = "Configuration of the lowest possible telemetry-level (Non-Enterprise Windows 10)"
+        Test = {
+            try {
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\DataCollection" `
+                    -Name "AllowTelemetry" `
+                    | Select-Object -ExpandProperty "AllowTelemetry"
+            
+                if ($regValue -ne 1) {
+                    return @{
+                        Message = "Registry value is '$regValue'. Expected: 1"
+                        Status = "False"
+                    }
+                }
+            }
+            catch [System.Management.Automation.PSArgumentException] {
                 return @{
-                    Message = "Registry value is '$regValue'. Expected: 1"
+                    Message = "Registry value not found."
                     Status = "False"
                 }
             }
-        }
-        catch [System.Management.Automation.PSArgumentException] {
-            return @{
-                Message = "Registry value not found."
-                Status = "False"
+            catch [System.Management.Automation.ItemNotFoundException] {
+                return @{
+                    Message = "Registry key not found."
+                    Status = "False"
+                }
             }
-        }
-        catch [System.Management.Automation.ItemNotFoundException] {
+            
             return @{
-                Message = "Registry key not found."
-                Status = "False"
+                Message = "Compliant"
+                Status = "True"
             }
-        }
-        
-        return @{
-            Message = "Compliant"
-            Status = "True"
         }
     }
 }
@@ -183,6 +193,15 @@
     Task = "Deactivation of telemetry according to Microsoft - Cloud-Based-Protection: disable MAPS"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Spynet" `
                 -Name "SpynetReporting" `
@@ -219,6 +238,15 @@
     Task = "Deactivation of telemetry according to Microsoft - Cloud-Based-Protection: never send sample files"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Spynet" `
                 -Name "SubmitSamplesConsent" `

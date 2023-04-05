@@ -2,7 +2,7 @@
 BSD 3-Clause License
 
 Copyright (c) 2018, FB Pro GmbH
-Copyright (c) 2021, Teal Technology Consulting GmbH
+Copyright (c) 2023, Teal Technology Consulting GmbH
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 RootModule = 'ATAPHtmlReport.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.10'
+ModuleVersion = '1.12'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -52,7 +52,7 @@ Author = 'Benedikt Böhme, Patrick Helbach, Steffen Winternheimer'
 CompanyName = 'TEAL Technology Consulting'
 
 # Copyright statement for this module
-Copyright = '(c) 2020 FB Pro GmbH. All rights reserved.'
+Copyright = '(c) 2020 FB Pro GmbH, (c) 2021, Teal Technology Consulting GmbH. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'A module part of the Audit Test Automation Package that creates html reports with tables and sections for audit reporting'
@@ -120,7 +120,7 @@ PrivateData = @{
 	PSData = @{
 
 		# Tags applied to this module. These help with module discovery in online galleries.
-		Tags = @('reporting', 'auditing', 'benchmarks', 'fb-pro', 'html', 'teal')
+		Tags = @('reporting', 'auditing', 'benchmarks', 'fb-pro', 'teal-technology-consulting', 'html')
 
 		# A URL to the license for this module.
 		LicenseUri = 'https://github.com/teal-technology-consulting/Teal-Audit-Proof/blob/master/LICENSE'

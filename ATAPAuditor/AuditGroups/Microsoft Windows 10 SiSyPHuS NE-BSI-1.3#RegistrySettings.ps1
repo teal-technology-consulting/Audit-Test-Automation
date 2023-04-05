@@ -1,6 +1,8 @@
 ﻿$RootPath = Split-Path $MyInvocation.MyCommand.Path -Parent
 $RootPath = Split-Path $RootPath -Parent
 . "$RootPath\Helpers\AuditGroupFunctions.ps1"
+$avstatus = CheckForActiveAV
+$windefrunning = CheckWindefRunning
 . "$RootPath\Helpers\Firewall.ps1"
 [AuditTest] @{
     Id = "1"
@@ -615,8 +617,8 @@ $RootPath = Split-Path $RootPath -Parent
     }
 }
 [AuditTest] @{
-    Id = "24_1"
-    Task = "(ND, NE) Ensure 'Hardened UNC Paths' is set to `"Require Mutual Authentication=1, `"Require Integrity=1`" for the value names `"\\*\NETLOGON`" und `"\\*\SYSVOL`"."
+    Id = "24 A"
+    Task = "(ND, NE) Ensure 'Hardened UNC Paths' is set to `"Require Mutual Authentication=1, `"Require Integrity=1`" for the value names `"\\*\NETLOGON`" und `"\\*\SYSVOL`". [\\*\NETLOGON]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -651,8 +653,8 @@ $RootPath = Split-Path $RootPath -Parent
     }
 }
 [AuditTest] @{
-    Id = "24_2"
-    Task = "(ND, NE) Ensure 'Hardened UNC Paths' is set to `"Require Mutual Authentication=1, `"Require Integrity=1`" for the value names `"\\*\NETLOGON`" und `"\\*\SYSVOL`"."
+    Id = "24 B"
+    Task = "(ND, NE) Ensure 'Hardened UNC Paths' is set to `"Require Mutual Authentication=1, `"Require Integrity=1`" for the value names `"\\*\NETLOGON`" und `"\\*\SYSVOL`". [\\*\SYSVOL]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -1947,7 +1949,7 @@ $RootPath = Split-Path $RootPath -Parent
     }
 }
 [AuditTest] @{
-    Id = "100_1"
+    Id = "100 A"
     Task = "(ND, NE) Ensure 'Turn off automatic learning' is set to 'Enabled' for ImplicitTextCollection."
     Test = {
         try {
@@ -1956,9 +1958,9 @@ $RootPath = Split-Path $RootPath -Parent
                 -Name "RestrictImplicitTextCollection" `
                 | Select-Object -ExpandProperty "RestrictImplicitTextCollection"
         
-            if ($regValue -ne 0) {
+            if ($regValue -ne 1) {
                 return @{
-                    Message = "Registry value is '$regValue'. Expected: 0"
+                    Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
                 }
             }
@@ -1983,7 +1985,7 @@ $RootPath = Split-Path $RootPath -Parent
     }
 }
 [AuditTest] @{
-    Id = "100_2"
+    Id = "100 B"
     Task = "(ND, NE) Ensure 'Turn off automatic learning' is set to 'Enabled' for ImplicitInkCollection."
     Test = {
         try {
@@ -1992,9 +1994,9 @@ $RootPath = Split-Path $RootPath -Parent
                 -Name "RestrictImplicitInkCollection" `
                 | Select-Object -ExpandProperty "RestrictImplicitInkCollection"
         
-            if ($regValue -ne 0) {
+            if ($regValue -ne 1) {
                 return @{
-                    Message = "Registry value is '$regValue'. Expected: 0"
+                    Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
                 }
             }
@@ -3463,8 +3465,17 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure detection for potentially unwanted applications' is set to 'Enabled: Block'."
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender" `
+                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender" `
                 -Name "PUAProtection" `
                 | Select-Object -ExpandProperty "PUAProtection"
         
@@ -3499,8 +3510,17 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Turn off Windows Defender Antivirus' is set to 'Disabled'."
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender" `
+                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender" `
                 -Name "DisableAntiSpyware" `
                 | Select-Object -ExpandProperty "DisableAntiSpyware"
         
@@ -3535,8 +3555,17 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure Watson events' is set to 'Disabled'."
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" `
+                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Reporting" `
                 -Name "DisableGenericReports" `
                 | Select-Object -ExpandProperty "DisableGenericReports"
         
@@ -3571,8 +3600,17 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Turn on behavior monitoring' is set to 'Enabled'."
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" `
+                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" `
                 -Name "DisableBehaviorMonitoring" `
                 | Select-Object -ExpandProperty "DisableBehaviorMonitoring"
         
@@ -3607,8 +3645,17 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure local setting override for reporting to Microsoft MAPS' is set to 'Disabled'."
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" `
+                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Spynet" `
                 -Name "LocalSettingOverrideSpynetReporting" `
                 | Select-Object -ExpandProperty "LocalSettingOverrideSpynetReporting"
         
@@ -3643,8 +3690,17 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Turn on e-mail scanning' is set to 'Enabled'."
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Scan" `
+                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Scan" `
                 -Name "DisableEmailScanning" `
                 | Select-Object -ExpandProperty "DisableEmailScanning"
         
@@ -3679,8 +3735,17 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Scan removable drives' is set to 'Enabled'."
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Scan" `
+                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Scan" `
                 -Name "DisableRemovableDriveScanning" `
                 | Select-Object -ExpandProperty "DisableRemovableDriveScanning"
         
@@ -3715,8 +3780,17 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Prevent users and apps from accessing dangerous websites' is set to 'Enabled: Block'."
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" `
+                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" `
                 -Name "EnableNetworkProtection" `
                 | Select-Object -ExpandProperty "EnableNetworkProtection"
         
@@ -3751,13 +3825,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure Attack Surface Reduction rules' is set to 'Enabled'."
     Test = {
         try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR"
@@ -3813,13 +3889,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block Office communication application  from creating child processes)"
     Test = {
         try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
@@ -3875,13 +3953,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured  (Block Office applications from creating  executable content)"
     Test = {
         try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
@@ -3937,13 +4017,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block execution of potentially obfuscated scripts)"
     Test = {
         try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
@@ -3999,13 +4081,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured  (Block Office applications from injecting code into other processes)"
     Test = {
         try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
@@ -4061,13 +4145,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured  (Block Adobe Reader from creating child processes)"
     Test = {
         try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
@@ -4123,13 +4209,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured  (Block Win32 API calls from Office macro)"
     Test = {
         try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
@@ -4185,13 +4273,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block credential stealing from the Windows local security authority subsystem (lsass.exe))"
     Test = {
         try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
@@ -4247,13 +4337,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block untrusted and unsigned processes that run from USB)"
     Test = {
         try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
@@ -4309,13 +4401,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured  (Block executable content from email client and webmail)"
     Test = {
         try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
@@ -4371,13 +4465,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block JavaScript or VBScript from launching downloaded executable content)"
     Test = {
        try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }     
+            }  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
@@ -4433,13 +4529,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block Office applications from creating child processes)"
     Test = {
         try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
@@ -5179,8 +5277,17 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Prevent users from modifying settings' is set to 'Enabled'."
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\App and Browser protection" `
+                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender Security Center\App and Browser protection" `
                 -Name "DisallowExploitProtectionOverride" `
                 | Select-Object -ExpandProperty "DisallowExploitProtectionOverride"
         
@@ -6997,14 +7104,10 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "(ND, NE) Ensure 'Connected User Experiences and Telemetry' is set to 'Disabled'."
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\DataCollection" `
-                -Name "TelemetryProxyServer" `
-                | Select-Object -ExpandProperty "TelemetryProxyServer"
-        
-            if ($regValue -ne "") {
+            $status = Get-Service DiagTrack | select -property starttype
+            if($status.StartType -ne "Disabled"){
                 return @{
-                    Message = "Registry value is '$regValue'. Expected: "
+                    Message = "Service not compliant. Currently: $($status)"
                     Status = "False"
                 }
             }

@@ -1,10 +1,10 @@
 ﻿@{
 RootModule = 'ATAPAuditor.psm1'
-ModuleVersion = '5.3'
+ModuleVersion = '5.5'
 GUID = '1662a599-4e3a-4f72-a844-9582077b589e'
 Author = 'Benedikt Böhme, Patrick Helbach, Steffen Winternheimer'
-CompanyName = 'FB Pro GmbH'
-Copyright = '(c) 2021 FB Pro GmbH. All rights reserved.'
+CompanyName = 'Teal Technology Consulting GmbH'
+Copyright = '(c) 2021 FB Pro GmbH, (c) 2023, Teal Technology Consulting GmbH. All rights reserved.'
 Description = 'Allows you to tests your system with the included reports.'
 PowerShellVersion = '5.0'
 RequiredModules = @(
@@ -31,7 +31,7 @@ AliasesToExport = @(
 # FileList = @()
 PrivateData = @{
 	PSData = @{
-		Tags = @('reporting', 'auditing', 'benchmarks', 'fb-pro', 'html')
+		Tags = @('reporting', 'auditing', 'benchmarks', 'fb-pro', 'teal-technology-consulting', 'html')
 		LicenseUri = 'https://github.com/teal-technology-consulting/Teal-Audit-Proof/blob/master/LICENSE'
 		ProjectUri = 'https://github.com/teal-technology-consulting/Teal-Audit-Proof'
 		# IconUri = ''

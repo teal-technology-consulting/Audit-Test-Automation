@@ -43,8 +43,7 @@ function ConvertTo-NTAccountUser {
             }
 
             # Identity doesn't exist on when Hyper-V isn't installed
-            if ($Name -eq "S-1-5-83-0" -and
-                (Get-WindowsOptionalFeature -Online -FeatureName "Microsoft-Hyper-V").State -ne "Enabled") {
+            if ($Name -eq "S-1-5-83-0" -and $hyperVStatus -ne "Enabled") {
                 return $null
             }
 
@@ -116,16 +115,10 @@ function ConvertTo-NTAccountUser {
         ) | ConvertTo-NTAccountUser | Where-Object { $null -ne $_ }
         
         $unexpectedUsers = $currentUserRights.Account | Where-Object { $_ -notin $identityAccounts.Account }
-        $missingUsers = $identityAccounts.Account | Where-Object { $_ -notin $currentUserRights.Account }
         
-        if (($unexpectedUsers.Count -gt 0) -or ($missingUsers.Count -gt 0)) {
+        if ($unexpectedUsers.Count -gt 0) {
             $messages = @()
-            if ($unexpectedUsers.Count -gt 0) {
-                $messages += "The user right 'SeNetworkLogonRight' contains following unexpected users: " + ($unexpectedUsers -join ", ")
-            }
-            if ($missingUsers.Count -gt 0) {
-                $messages += "The user 'SeNetworkLogonRight' setting does not contain the following users: " + ($missingUsers -join ", ")
-            }
+            $messages += "The user right 'SeNetworkLogonRight' contains following unexpected users: " + ($unexpectedUsers -join ", ")
             $message = $messages -join [System.Environment]::NewLine
         
             return @{
@@ -607,6 +600,25 @@ else{
                 Message = $message
             }
         } 
+        #No UserRights on System comparing to publisher recommendation
+        if($null -eq $currentUserRights -and $identityAccounts.Count -gt 0){
+            return @{
+                Status = "True"
+                Message = "Compliant - No UserRights are assigned to this policy. This configuration is even more secure than publisher recommendation."
+            }
+        }
+        #Less UserRights on System comparing to publisher recommendation
+        if($currentUserRights.Count -lt $identityAccounts.Count){
+            $users = ""
+            foreach($currentUser in $currentUserRights){
+                $users += $currentUser.Values
+            }
+            return @{
+                Status = "True"
+                Message = "Compliant - Positive Deviation to publisher. Less UserRights are assigned to this policy than expected: $($users)"
+            }
+        }
+        #Same UserRights on System comparing to publisher recommendation
         return @{
             Status = "True"
             Message = "Compliant"

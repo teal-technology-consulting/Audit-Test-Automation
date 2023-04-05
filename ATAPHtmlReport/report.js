@@ -201,7 +201,7 @@ function calcDotPosition(){
     else{
         riskResult.innerText = "Critical";
         riskResult.style.color = "white";
-        riskResult.style.backgroundColor = "FF0000";
+        riskResult.style.backgroundColor = "#FF0000";
     }
     riskResult.style.display = "inline";
     riskResult.style.padding = "5px 10px";

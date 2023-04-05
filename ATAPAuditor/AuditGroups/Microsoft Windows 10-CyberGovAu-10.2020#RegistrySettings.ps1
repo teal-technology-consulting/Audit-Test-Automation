@@ -1,6 +1,8 @@
 ﻿$RootPath = Split-Path $MyInvocation.MyCommand.Path -Parent
 $RootPath = Split-Path $RootPath -Parent
 . "$RootPath\Helpers\AuditGroupFunctions.ps1"
+$avstatus = CheckForActiveAV
+$windefrunning = CheckWindefRunning
 [AuditTest] @{
     Id = "1909.01"
     Task = "Ensure 'Deploy Windows Defender Application Control' is set to 'Enabled'"
@@ -114,13 +116,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules' is set to 'Enabled'"
     Test = {
         try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR"
@@ -176,12 +180,40 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured  (Block executable content from email client and webmail)"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
-                -Name "BE9BA2D9-53EA-4CDC-84E5-9B1EEEE46550" `
-                | Select-Object -ExpandProperty "BE9BA2D9-53EA-4CDC-84E5-9B1EEEE46550"
-        
-            if ($regValue -ne 1) {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }                  
+            $regValue = 0;
+            $regValueTwo = 0;
+            $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value = "be9ba2d9-53ea-4cdc-84e5-9b1eeee46550"
+
+            $asrTest1 = Test-ASRRules -Path $Path -Value $Value 
+            if($asrTest1){
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path `
+                    -Name $Value `
+                    | Select-Object -ExpandProperty $Value
+            }
+
+            $Path2 = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value2 = "be9ba2d9-53ea-4cdc-84e5-9b1eeee46550"
+
+            $asrTest2 = Test-ASRRules -Path $Path2 -Value $Value2 
+            if($asrTest2){
+                $regValueTwo = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path2 `
+                    -Name $Value2 `
+                    | Select-Object -ExpandProperty $Value2
+            }
+
+            if ($regValue -ne 1 -and $regValueTwo -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
@@ -212,12 +244,40 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block Office applications from creating child processes)"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
-                -Name "D4F940AB-401B-4EFC-AADC-AD5F3C50688A" `
-                | Select-Object -ExpandProperty "D4F940AB-401B-4EFC-AADC-AD5F3C50688A"
-        
-            if ($regValue -ne 1) {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }                  
+            $regValue = 0;
+            $regValueTwo = 0;
+            $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value = "d4f940ab-401b-4efc-aadc-ad5f3c50688a"
+
+            $asrTest1 = Test-ASRRules -Path $Path -Value $Value 
+            if($asrTest1){
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path `
+                    -Name $Value `
+                    | Select-Object -ExpandProperty $Value
+            }
+
+            $Path2 = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value2 = "d4f940ab-401b-4efc-aadc-ad5f3c50688a"
+
+            $asrTest2 = Test-ASRRules -Path $Path2 -Value $Value2 
+            if($asrTest2){
+                $regValueTwo = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path2 `
+                    -Name $Value2 `
+                    | Select-Object -ExpandProperty $Value2
+            }
+
+            if ($regValue -ne 1 -and $regValueTwo -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
@@ -248,12 +308,40 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured  (Block Office applications from creating  executable content)"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
-                -Name "3B576869-A4EC-4529-8536-B80A7769E899" `
-                | Select-Object -ExpandProperty "3B576869-A4EC-4529-8536-B80A7769E899"
-        
-            if ($regValue -ne 1) {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }                  
+            $regValue = 0;
+            $regValueTwo = 0;
+            $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value = "3b576869-a4ec-4529-8536-b80a7769e899"
+
+            $asrTest1 = Test-ASRRules -Path $Path -Value $Value 
+            if($asrTest1){
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path `
+                    -Name $Value `
+                    | Select-Object -ExpandProperty $Value
+            }
+
+            $Path2 = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value2 = "3b576869-a4ec-4529-8536-b80a7769e899"
+
+            $asrTest2 = Test-ASRRules -Path $Path2 -Value $Value2 
+            if($asrTest2){
+                $regValueTwo = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path2 `
+                    -Name $Value2 `
+                    | Select-Object -ExpandProperty $Value2
+            }
+
+            if ($regValue -ne 1 -and $regValueTwo -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
@@ -284,12 +372,40 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured  (Block Office applications from injecting code into other processes)"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
-                -Name "75668C1F-73B5-4CF0-BB93-3ECF5CB7CC84" `
-                | Select-Object -ExpandProperty "75668C1F-73B5-4CF0-BB93-3ECF5CB7CC84"
-        
-            if ($regValue -ne 1) {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }                  
+            $regValue = 0;
+            $regValueTwo = 0;
+            $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value = "75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84"
+
+            $asrTest1 = Test-ASRRules -Path $Path -Value $Value 
+            if($asrTest1){
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path `
+                    -Name $Value `
+                    | Select-Object -ExpandProperty $Value
+            }
+
+            $Path2 = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value2 = "75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84"
+
+            $asrTest2 = Test-ASRRules -Path $Path2 -Value $Value2 
+            if($asrTest2){
+                $regValueTwo = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path2 `
+                    -Name $Value2 `
+                    | Select-Object -ExpandProperty $Value2
+            }
+
+            if ($regValue -ne 1 -and $regValueTwo -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
@@ -320,12 +436,40 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block JavaScript or VBScript from launching downloaded executable content)"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
-                -Name "D3E037E1-3EB8-44C8-A917-57927947596D" `
-                | Select-Object -ExpandProperty "D3E037E1-3EB8-44C8-A917-57927947596D"
-        
-            if ($regValue -ne 1) {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }                  
+            $regValue = 0;
+            $regValueTwo = 0;
+            $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value = "d3e037e1-3eb8-44c8-a917-57927947596d"
+
+            $asrTest1 = Test-ASRRules -Path $Path -Value $Value 
+            if($asrTest1){
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path `
+                    -Name $Value `
+                    | Select-Object -ExpandProperty $Value
+            }
+
+            $Path2 = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value2 = "d3e037e1-3eb8-44c8-a917-57927947596d"
+
+            $asrTest2 = Test-ASRRules -Path $Path2 -Value $Value2 
+            if($asrTest2){
+                $regValueTwo = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path2 `
+                    -Name $Value2 `
+                    | Select-Object -ExpandProperty $Value2
+            }
+
+            if ($regValue -ne 1 -and $regValueTwo -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
@@ -356,12 +500,40 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block execution of potentially obfuscated scripts)"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
-                -Name "5BEB7EFE-FD9A-4556-801D-275E5FFC04CC" `
-                | Select-Object -ExpandProperty "5BEB7EFE-FD9A-4556-801D-275E5FFC04CC"
-        
-            if ($regValue -ne 1) {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }                   
+            $regValue = 0;
+            $regValueTwo = 0;
+            $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value = "5beb7efe-fd9a-4556-801d-275e5ffc04cc" 
+
+            $asrTest1 = Test-ASRRules -Path $Path -Value $Value 
+            if($asrTest1){
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path `
+                    -Name $Value `
+                    | Select-Object -ExpandProperty $Value
+            }
+
+            $Path2 = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value2 = "5beb7efe-fd9a-4556-801d-275e5ffc04cc" 
+
+            $asrTest2 = Test-ASRRules -Path $Path2 -Value $Value2 
+            if($asrTest2){
+                $regValueTwo = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path2 `
+                    -Name $Value2 `
+                    | Select-Object -ExpandProperty $Value2
+            }
+
+            if ($regValue -ne 1 -and $regValueTwo -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
@@ -392,12 +564,40 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured  (Block Win32 API calls from Office macro)"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
-                -Name "92E97FA1-2EDF-4476-BDD6-9DD0B4DDDC7B" `
-                | Select-Object -ExpandProperty "92E97FA1-2EDF-4476-BDD6-9DD0B4DDDC7B"
-        
-            if ($regValue -ne 1) {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }                  
+            $regValue = 0;
+            $regValueTwo = 0;
+            $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value = "92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b"
+
+            $asrTest1 = Test-ASRRules -Path $Path -Value $Value 
+            if($asrTest1){
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path `
+                    -Name $Value `
+                    | Select-Object -ExpandProperty $Value
+            }
+
+            $Path2 = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value2 = "92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b"
+
+            $asrTest2 = Test-ASRRules -Path $Path2 -Value $Value2 
+            if($asrTest2){
+                $regValueTwo = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path2 `
+                    -Name $Value2 `
+                    | Select-Object -ExpandProperty $Value2
+            }
+
+            if ($regValue -ne 1 -and $regValueTwo -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
@@ -428,12 +628,40 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules' is configured (Block executable files from running unless they meet a prevalence, age, or trusted list criterion)."
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
-                -Name "01443614-CD74-433A-B99E-2ECDC07BFC25" `
-                | Select-Object -ExpandProperty "01443614-CD74-433A-B99E-2ECDC07BFC25"
-        
-            if ($regValue -ne 1) {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }                  
+            $regValue = 0;
+            $regValueTwo = 0;
+            $Path = "Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value = "01443614-CD74-433A-B99E-2ECDC07BFC25"
+
+            $asrTest1 = Test-ASRRules -Path $Path -Value $Value 
+            if($asrTest1){
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path `
+                    -Name $Value `
+                    | Select-Object -ExpandProperty $Value
+            }
+
+            $Path2 = "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value2 = "01443614-CD74-433A-B99E-2ECDC07BFC25"
+
+            $asrTest2 = Test-ASRRules -Path $Path2 -Value $Value2 
+            if($asrTest2){
+                $regValueTwo = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path2 `
+                    -Name $Value2 `
+                    | Select-Object -ExpandProperty $Value2
+            }
+
+            if ($regValue -ne 1 -and $regValueTwo -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
@@ -464,13 +692,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules' is configured (Use advanced protection against ransomware)."
     Test = {
         try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
@@ -526,12 +756,40 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block credential stealing from the Windows local security authority subsystem (lsass.exe))"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
-                -Name "9E6C4E1F-7D60-472F-BA1A-A39EF669E4B2" `
-                | Select-Object -ExpandProperty "9E6C4E1F-7D60-472F-BA1A-A39EF669E4B2"
-        
-            if ($regValue -ne 1) {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }                  
+            $regValue = 0;
+            $regValueTwo = 0;
+            $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value = "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2"
+
+            $asrTest1 = Test-ASRRules -Path $Path -Value $Value 
+            if($asrTest1){
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path `
+                    -Name $Value `
+                    | Select-Object -ExpandProperty $Value
+            }
+
+            $Path2 = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value2 = "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2"
+
+            $asrTest2 = Test-ASRRules -Path $Path2 -Value $Value2 
+            if($asrTest2){
+                $regValueTwo = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path2 `
+                    -Name $Value2 `
+                    | Select-Object -ExpandProperty $Value2
+            }
+
+            if ($regValue -ne 1 -and $regValueTwo -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
@@ -562,12 +820,40 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block process creations originating from PSExec and WMI commands)"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
-                -Name "D1E49AAC-8F56-4280-B9BA-993A6D77406C" `
-                | Select-Object -ExpandProperty "D1E49AAC-8F56-4280-B9BA-993A6D77406C"
-        
-            if ($regValue -ne 1) {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }                  
+            $regValue = 0;
+            $regValueTwo = 0;
+            $Path = "Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value = "D1E49AAC-8F56-4280-B9BA-993A6D77406C"
+
+            $asrTest1 = Test-ASRRules -Path $Path -Value $Value 
+            if($asrTest1){
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path `
+                    -Name $Value `
+                    | Select-Object -ExpandProperty $Value
+            }
+
+            $Path2 = "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value2 = "D1E49AAC-8F56-4280-B9BA-993A6D77406C"
+
+            $asrTest2 = Test-ASRRules -Path $Path2 -Value $Value2 
+            if($asrTest2){
+                $regValueTwo = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path2 `
+                    -Name $Value2 `
+                    | Select-Object -ExpandProperty $Value2
+            }
+
+            if ($regValue -ne 1 -and $regValueTwo -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
@@ -598,12 +884,40 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block untrusted and unsigned processes that run from USB)"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
-                -Name "B2B3F03D-6A65-4F7B-A9C7-1C7EF74A9BA4" `
-                | Select-Object -ExpandProperty "B2B3F03D-6A65-4F7B-A9C7-1C7EF74A9BA4"
-        
-            if ($regValue -ne 1) {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }                  
+            $regValue = 0;
+            $regValueTwo = 0;
+            $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value = "b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4"
+
+            $asrTest1 = Test-ASRRules -Path $Path -Value $Value 
+            if($asrTest1){
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path `
+                    -Name $Value `
+                    | Select-Object -ExpandProperty $Value
+            }
+
+            $Path2 = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value2 = "b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4"
+
+            $asrTest2 = Test-ASRRules -Path $Path2 -Value $Value2 
+            if($asrTest2){
+                $regValueTwo = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path2 `
+                    -Name $Value2 `
+                    | Select-Object -ExpandProperty $Value2
+            }
+
+            if ($regValue -ne 1 -and $regValueTwo -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
@@ -634,12 +948,40 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block Office communication application from creating child processes)"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
-                -Name "26190899-1602-49E8-8B27-EB1D0A1CE869" `
-                | Select-Object -ExpandProperty "26190899-1602-49E8-8B27-EB1D0A1CE869"
-        
-            if ($regValue -ne 1) {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }                  
+            $regValue = 0;
+            $regValueTwo = 0;
+            $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value = "26190899-1602-49e8-8b27-eb1d0a1ce869"
+
+            $asrTest1 = Test-ASRRules -Path $Path -Value $Value 
+            if($asrTest1){
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path `
+                    -Name $Value `
+                    | Select-Object -ExpandProperty $Value
+            }
+
+            $Path2 = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value2 = "26190899-1602-49e8-8b27-eb1d0a1ce869"
+
+            $asrTest2 = Test-ASRRules -Path $Path2 -Value $Value2 
+            if($asrTest2){
+                $regValueTwo = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path2 `
+                    -Name $Value2 `
+                    | Select-Object -ExpandProperty $Value2
+            }
+
+            if ($regValue -ne 1 -and $regValueTwo -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
@@ -670,12 +1012,40 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block Adobe Reader from creating child processes)"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" `
-                -Name "7674BA52-37EB-4A4F-A9A1-F0F9A1619A2C" `
-                | Select-Object -ExpandProperty "7674BA52-37EB-4A4F-A9A1-F0F9A1619A2C"
-        
-            if ($regValue -ne 1) {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }                  
+            $regValue = 0;
+            $regValueTwo = 0;
+            $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value = "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c"
+
+            $asrTest1 = Test-ASRRules -Path $Path -Value $Value 
+            if($asrTest1){
+                $regValue = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path `
+                    -Name $Value `
+                    | Select-Object -ExpandProperty $Value
+            }
+
+            $Path2 = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+            $Value2 = "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c"
+
+            $asrTest2 = Test-ASRRules -Path $Path2 -Value $Value2 
+            if($asrTest2){
+                $regValueTwo = Get-ItemProperty -ErrorAction Stop `
+                    -Path $Path2 `
+                    -Name $Value2 `
+                    | Select-Object -ExpandProperty $Value2
+            }
+
+            if ($regValue -ne 1 -and $regValueTwo -ne 1) {
                 return @{
                     Message = "Registry value is '$regValue'. Expected: 1"
                     Status = "False"
@@ -706,13 +1076,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured (Block persistence through WMI event subscription)"
     Test = {
             try {
-            $defStatus = (Get-MpComputerStatus -ErrorAction Ignore | Select-Object AMRunningMode)
-            if ($defStatus.AMRunningMode -ne "Normal") {
-                return @{
-                    Message = "ASR rules require Windows Defender Antivirus to be enabled."
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
-            }                     
+            }                  
             $regValue = 0;
             $regValueTwo = 0;
             $Path = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
@@ -801,7 +1173,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.05.1"
-    Task = "Ensure 'Turn On Virtualization Based Security' is set to 'Enabled'"
+    Task = "Ensure 'Turn On Virtualization Based Security' is set to 'Enabled' [EnableVirtualizationBasedSecurity]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -837,7 +1209,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.05.2"
-    Task = "Ensure 'Turn On Virtualization Based Security' is set to 'Enabled'"
+    Task = "Ensure 'Turn On Virtualization Based Security' is set to 'Enabled' [RequirePlatformSecurityFeatures]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -873,7 +1245,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.05.3"
-    Task = "Ensure 'Turn On Virtualization Based Security' is set to 'Enabled'"
+    Task = "Ensure 'Turn On Virtualization Based Security' is set to 'Enabled' [LsaCfgFlags]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -909,9 +1281,18 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.06.1"
-    Task = "Ensure 'Configure allowed applications' is set to 'Enabled'"
+    Task = "Ensure 'Configure allowed applications' is set to 'Enabled' [ExploitGuard_ControlledFolderAccess_AllowedApplications]"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" `
                 -Name "ExploitGuard_ControlledFolderAccess_AllowedApplications" `
@@ -945,9 +1326,18 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.06.2"
-    Task = "Ensure 'Configure allowed applications' is set to 'Enabled'"
+    Task = "Ensure 'Configure allowed applications' is set to 'Enabled' [16]"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access\AllowedApplications" `
                 -Name "16" `
@@ -984,42 +1374,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure Controlled folder access' is set to 'Enabled'"
     Test = {
         try {
-            $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" `
-                -Name "EnableControlledFolderAccess" `
-                | Select-Object -ExpandProperty "EnableControlledFolderAccess"
-        
-            if ($regValue -ne 1) {
-                return @{
-                    Message = "Registry value is '$regValue'. Expected: 1"
-                    Status = "False"
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
                 }
             }
-        }
-        catch [System.Management.Automation.PSArgumentException] {
-            return @{
-                Message = "Registry value not found."
-                Status = "False"
-            }
-        }
-        catch [System.Management.Automation.ItemNotFoundException] {
-            return @{
-                Message = "Registry key not found."
-                Status = "False"
-            }
-        }
-        
-        return @{
-            Message = "Compliant"
-            Status = "True"
-        }
-    }
-}
-[AuditTest] @{
-    Id = "1909.07.2"
-    Task = "Ensure 'Configure Controlled folder access' is set to 'Enabled'"
-    Test = {
-        try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" `
                 -Name "EnableControlledFolderAccess" `
@@ -1053,9 +1416,18 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.08.1"
-    Task = "Ensure 'Configure protected folders' is set to 'Enabled'"
+    Task = "Ensure 'Configure protected folders' is set to 'Enabled' [ExploitGuard_ControlledFolderAccess_ProtectedFolders]"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" `
                 -Name "ExploitGuard_ControlledFolderAccess_ProtectedFolders" `
@@ -1089,9 +1461,18 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.08.2"
-    Task = "Ensure 'Configure protected folders' is set to 'Enabled'"
+    Task = "Ensure 'Configure protected folders' is set to 'Enabled' [17]"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access\ProtectedFolders" `
                 -Name "17" `
@@ -1488,6 +1869,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Use a common set of exploit protection settings' is set to 'Enabled'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender ExploitGuard\Exploit Protection" `
                 -Name "ExploitProtectionSettings" `
@@ -1524,8 +1914,17 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Prevent users from modifying settings' is set to 'Enabled'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
-                -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\App and Browser protection" `
+                -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender Security Center\App and Browser protection" `
                 -Name "DisallowExploitProtectionOverride" `
                 | Select-Object -ExpandProperty "DisallowExploitProtectionOverride"
         
@@ -1989,7 +2388,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.38.1"
-    Task = "Ensure 'Configure Automatic Updates' is set to 'Enabled'"
+    Task = "Ensure 'Configure Automatic Updates' is set to 'Enabled' [NoAutoUpdate]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -2025,7 +2424,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.38.2"
-    Task = "Ensure 'Configure Automatic Updates' is set to 'Enabled'"
+    Task = "Ensure 'Configure Automatic Updates' is set to 'Enabled' [AUOptions]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -2061,7 +2460,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.38.3"
-    Task = "Ensure 'Configure Automatic Updates' is set to 'Enabled'"
+    Task = "Ensure 'Configure Automatic Updates' is set to 'Enabled' [ScheduledInstallDay]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -2097,7 +2496,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.38.4"
-    Task = "Ensure 'Configure Automatic Updates' is set to 'Enabled'"
+    Task = "Ensure 'Configure Automatic Updates' is set to 'Enabled' [AllowMUUpdateService]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -2676,6 +3075,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Turn off Microsoft Defender Antivirus' is set to 'Disabled'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender" `
                 -Name "DisableAntiSpyware" `
@@ -2712,6 +3120,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure local setting override for reporting to Microsoft MAPS' is set to 'Disabled'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Spynet" `
                 -Name "LocalSettingOverrideSpynetReporting" `
@@ -2748,6 +3165,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure the 'Block at First Sight' feature' is set to 'Enabled'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Spynet" `
                 -Name "DisableBlockAtFirstSeen" `
@@ -2784,6 +3210,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Join Microsoft MAPS' is set to 'Enabled'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Spynet" `
                 -Name "SpynetReporting" `
@@ -2820,6 +3255,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Send file samples when further analysis is required' is set to 'Enabled'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Spynet" `
                 -Name "SubmitSamplesConsent" `
@@ -2856,6 +3300,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Configure extended cloud check' is set to 'Enabled' and set to '50'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\MpEngine" `
                 -Name "MpBafsExtendedTimeout" `
@@ -2892,6 +3345,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Select cloud protection level' is set to 'Enabled'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\MpEngine" `
                 -Name "MpCloudBlockLevel" `
@@ -3000,6 +3462,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Turn on behavior monitoring' is set to 'Enabled'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" `
                 -Name "DisableRealtimeMonitoring" `
@@ -3144,6 +3615,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Scan archive files' is set to 'Enabled'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Scan" `
                 -Name "DisableArchiveScanning" `
@@ -3216,6 +3696,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Scan removable drives' is set to 'Enabled'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Scan" `
                 -Name "DisableRemovableDriveScanning" `
@@ -3252,6 +3741,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Turn on e-mail scanning' is set to 'Enabled'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Scan" `
                 -Name "DisableEmailScanning" `
@@ -3825,7 +4323,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.86.1"
-    Task = "Ensure 'Prevent installation of devices that match any of these device IDs' is set to 'Enabled'"
+    Task = "Ensure 'Prevent installation of devices that match any of these device IDs' is set to 'Enabled' [DenyDeviceIDs]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -3861,7 +4359,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.86.2"
-    Task = "Ensure 'Prevent installation of devices that match any of these device IDs' is set to 'Enabled'"
+    Task = "Ensure 'Prevent installation of devices that match any of these device IDs' is set to 'Enabled' [18]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -3897,7 +4395,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.86.3"
-    Task = "Ensure 'Prevent installation of devices that match any of these device IDs' is set to 'Enabled'"
+    Task = "Ensure 'Prevent installation of devices that match any of these device IDs' is set to 'Enabled' [19]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -3933,7 +4431,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.86.4"
-    Task = "Ensure 'Prevent installation of devices that match any of these device IDs' is set to 'Enabled'"
+    Task = "Ensure 'Prevent installation of devices that match any of these device IDs' is set to 'Enabled' [DenyDeviceIDsRetroactive]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -4905,7 +5403,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.110.1"
-    Task = "Ensure 'Choose drive encryption method and cipher strength (Windows 10 [Version 1511] and later)' is set to 'Enabled'"
+    Task = "Ensure 'Choose drive encryption method and cipher strength (Windows 10 [Version 1511] and later)' is set to 'Enabled' [EncryptionMethodWithXtsOs]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -4941,7 +5439,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.110.2"
-    Task = "Ensure 'Choose drive encryption method and cipher strength (Windows 10 [Version 1511] and later)' is set to 'Enabled'"
+    Task = "Ensure 'Choose drive encryption method and cipher strength (Windows 10 [Version 1511] and later)' is set to 'Enabled' [EncryptionMethodWithXtsFdv]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -4977,7 +5475,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.110.3"
-    Task = "Ensure 'Choose drive encryption method and cipher strength (Windows 10 [Version 1511] and later)' is set to 'Enabled'"
+    Task = "Ensure 'Choose drive encryption method and cipher strength (Windows 10 [Version 1511] and later)' is set to 'Enabled' [EncryptionMethodWithXtsRdv]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5049,7 +5547,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.112.1"
-    Task = "Ensure 'Choose how BitLocker-protected fixed drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected fixed drives can be recovered' is set to 'Enabled' [FDVRecovery]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5085,7 +5583,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.112.2"
-    Task = "Ensure 'Choose how BitLocker-protected fixed drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected fixed drives can be recovered' is set to 'Enabled' [FDVManageDRA]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5121,7 +5619,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.112.3"
-    Task = "Ensure 'Choose how BitLocker-protected fixed drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected fixed drives can be recovered' is set to 'Enabled' [FDVHideRecoveryPage]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5157,7 +5655,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.112.4"
-    Task = "Ensure 'Choose how BitLocker-protected fixed drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected fixed drives can be recovered' is set to 'Enabled' [FDVActiveDirectoryBackup]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5193,7 +5691,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.112.5"
-    Task = "Ensure 'Choose how BitLocker-protected fixed drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected fixed drives can be recovered' is set to 'Enabled' [FDVActiveDirectoryInfoToStore]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5229,7 +5727,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.112.6"
-    Task = "Ensure 'Choose how BitLocker-protected fixed drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected fixed drives can be recovered' is set to 'Enabled' [FDVRequireActiveDirectoryBackup]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5265,7 +5763,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.113.1"
-    Task = "Ensure 'Configure use of passwords for fixed data drives' is set to 'Enabled'"
+    Task = "Ensure 'Configure use of passwords for fixed data drives' is set to 'Enabled' [FDVPassphrase]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5301,7 +5799,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.113.2"
-    Task = "Ensure 'Configure use of passwords for fixed data drives' is set to 'Enabled'"
+    Task = "Ensure 'Configure use of passwords for fixed data drives' is set to 'Enabled' [FDVEnforcePassphrase]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5337,7 +5835,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.113.3"
-    Task = "Ensure 'Configure use of passwords for fixed data drives' is set to 'Enabled'"
+    Task = "Ensure 'Configure use of passwords for fixed data drives' is set to 'Enabled' [FDVPassphraseComplexity]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5373,7 +5871,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.113.4"
-    Task = "Ensure 'Configure use of passwords for fixed data drives' is set to 'Enabled'"
+    Task = "Ensure 'Configure use of passwords for fixed data drives' is set to 'Enabled' [FDVPassphraseLength]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5625,7 +6123,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.120.1"
-    Task = "Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled' [OSRecovery]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5661,7 +6159,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.120.2"
-    Task = "Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled' [OSManageDRA]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5697,7 +6195,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.120.3"
-    Task = "Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled' [OSHideRecoveryPage]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5733,7 +6231,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.120.4"
-    Task = "Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled' [OSActiveDirectoryBackup]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5769,7 +6267,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.120.5"
-    Task = "Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled' [OSActiveDirectoryInfoToStore]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5805,7 +6303,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.120.6"
-    Task = "Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled' [OSRequireActiveDirectoryBackup]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5877,7 +6375,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.122.1"
-    Task = "Ensure 'Configure use of passwords for operating system drives' is set to 'Enabled'"
+    Task = "Ensure 'Configure use of passwords for operating system drives' is set to 'Enabled' [OSPassphrase]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5913,7 +6411,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.122.2"
-    Task = "Ensure 'Configure use of passwords for operating system drives' is set to 'Enabled'"
+    Task = "Ensure 'Configure use of passwords for operating system drives' is set to 'Enabled' [OSPassphraseComplexity]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -5949,7 +6447,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.122.3"
-    Task = "Ensure 'Configure use of passwords for operating system drives' is set to 'Enabled'"
+    Task = "Ensure 'Configure use of passwords for operating system drives' is set to 'Enabled' [OSPassphraseLength]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6057,7 +6555,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.125.1"
-    Task = "Ensure 'Require additional authentication at startup' is set to 'Enabled'"
+    Task = "Ensure 'Require additional authentication at startup' is set to 'Enabled' [UseAdvancedStartup]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6093,7 +6591,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.125.2"
-    Task = "Ensure 'Require additional authentication at startup' is set to 'Enabled'"
+    Task = "Ensure 'Require additional authentication at startup' is set to 'Enabled' [EnableBDEWithNoTPM]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6129,7 +6627,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.125.3"
-    Task = "Ensure 'Require additional authentication at startup' is set to 'Enabled'"
+    Task = "Ensure 'Require additional authentication at startup' is set to 'Enabled' [UseTPM]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6165,7 +6663,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.125.4"
-    Task = "Ensure 'Require additional authentication at startup' is set to 'Enabled'"
+    Task = "Ensure 'Require additional authentication at startup' is set to 'Enabled' [UseTPMPIN]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6201,7 +6699,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.125.5"
-    Task = "Ensure 'Require additional authentication at startup' is set to 'Enabled'"
+    Task = "Ensure 'Require additional authentication at startup' is set to 'Enabled' [UseTPMKey]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6237,7 +6735,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.125.6"
-    Task = "Ensure 'Require additional authentication at startup' is set to 'Enabled'"
+    Task = "Ensure 'Require additional authentication at startup' is set to 'Enabled' [UseTPMKeyPIN]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6309,7 +6807,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.127.1"
-    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled' [RDVRecovery]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6345,7 +6843,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.127.2"
-    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled' [RDVManageDRA]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6381,7 +6879,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.127.3"
-    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled' [RDVRecoveryPassword]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6417,7 +6915,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.127.4"
-    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled' [RDVRecoveryKey]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6453,7 +6951,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.127.5"
-    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled' [RDVHideRecoveryPage]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6489,7 +6987,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.127.6"
-    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled' [RDVActiveDirectoryBackup]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6525,7 +7023,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.127.7"
-    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled' [RDVActiveDirectoryInfoToStore]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6561,7 +7059,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.127.8"
-    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled'"
+    Task = "Ensure 'Choose how BitLocker-protected removable drives can be recovered' is set to 'Enabled' [RDVRequireActiveDirectoryBackup]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6597,7 +7095,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.128.1"
-    Task = "Ensure 'Configure use of passwords for removable data drives' is set to 'Enabled'"
+    Task = "Ensure 'Configure use of passwords for removable data drives' is set to 'Enabled' [RDVPassphrase]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6633,7 +7131,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.128.2"
-    Task = "Ensure 'Configure use of passwords for removable data drives' is set to 'Enabled'"
+    Task = "Ensure 'Configure use of passwords for removable data drives' is set to 'Enabled' [RDVEnforcePassphrase]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6669,7 +7167,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.128.3"
-    Task = "Ensure 'Configure use of passwords for removable data drives' is set to 'Enabled'"
+    Task = "Ensure 'Configure use of passwords for removable data drives' is set to 'Enabled' [RDVPassphraseComplexity]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6705,7 +7203,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.128.4"
-    Task = "Ensure 'Configure use of passwords for removable data drives' is set to 'Enabled'"
+    Task = "Ensure 'Configure use of passwords for removable data drives' is set to 'Enabled' [RDVPassphraseLength]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6741,7 +7239,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.129.1"
-    Task = "Ensure 'Control use of BitLocker on removable drives' is set to 'Enabled'"
+    Task = "Ensure 'Control use of BitLocker on removable drives' is set to 'Enabled' [RDVConfigureBDE]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -6777,7 +7275,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.129.2"
-    Task = "Ensure 'Control use of BitLocker on removable drives' is set to 'Enabled'"
+    Task = "Ensure 'Control use of BitLocker on removable drives' is set to 'Enabled' [RDVAllowBDE]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -8616,6 +9114,13 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Turn off Inventory Collector' is set to 'Enabled'"
     Test = {
         try {
+            $status = (get-service -name pcasvc).Status
+            if($status -ne "Stopped"){
+                return @{
+                    Message = "Compliant - AppCompat Service is disabled (no inventory data will be collected)."
+                    Status = "True"
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\AppCompat" `
                 -Name "DisableInventory" `
@@ -8652,6 +9157,13 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Turn off Steps Recorder' is set to 'Enabled'"
     Test = {
         try {
+            $status = (get-service -name pcasvc).Status
+            if($status -ne "Stopped"){
+                return @{
+                    Message = "Compliant - AppCompat Service is disabled (no inventory data will be collected)."
+                    Status = "True"
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\AppCompat" `
                 -Name "DisableUAR" `
@@ -8721,7 +9233,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.182.1"
-    Task = "Ensure 'Configure Corporate Windows Error Reporting' is set to 'Enabled'"
+    Task = "Ensure 'Configure Corporate Windows Error Reporting' is set to 'Enabled' [CorporateWerServer]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -8757,7 +9269,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.182.2"
-    Task = "Ensure 'Configure Corporate Windows Error Reporting' is set to 'Enabled'"
+    Task = "Ensure 'Configure Corporate Windows Error Reporting' is set to 'Enabled' [CorporateWerUseSSL]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -8793,7 +9305,7 @@ $RootPath = Split-Path $RootPath -Parent
 }
 [AuditTest] @{
     Id = "1909.182.3"
-    Task = "Ensure 'Configure Corporate Windows Error Reporting' is set to 'Enabled'"
+    Task = "Ensure 'Configure Corporate Windows Error Reporting' is set to 'Enabled' [CorporateWerPortNumber]"
     Test = {
         try {
             $regValue = Get-ItemProperty -ErrorAction Stop `
@@ -12216,6 +12728,15 @@ $RootPath = Split-Path $RootPath -Parent
     Task = "Ensure 'Prevent users and apps from accessing dangerous websites' is set to 'Enabled'"
     Test = {
         try {
+            if($avstatus){
+
+                if ((-not $windefrunning)) {
+                    return @{
+                        Message = "This rule requires Windows Defender Antivirus to be enabled."
+                        Status = "None"
+                    }
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" `
                 -Name "EnableNetworkProtection" `
