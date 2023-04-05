@@ -6,8 +6,8 @@
 		"DISA Windows Server 2016 Security Technical Implementation Guide, Version: V1R6, Date: 2018-10-26"
 		"CIS Microsoft Windows Server 2016 RTM (Release 1607) Benchmark, Version: 1.4.0, Date: 2022-04-21"
 		"Microsoft Security baseline for Windows Server 2016 Domain Controller, Version: FINAL, Date 2016-10-17"
-		"FB Pro recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
-		"FB Pro recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
+		"TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+		"TEAL recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
 	)
 	Sections = @(
 		[ReportSection] @{
@@ -93,8 +93,8 @@
 			)
 		}
 		[ReportSection] @{
-			Title = 'FB Pro recommendations'
-			Description = 'This section contains the FB Pro recommendations.'
+			Title = 'TEAL recommendations'
+			Description = 'This section contains the TEAL recommendations.'
 			SubSections = @(
 				[ReportSection] @{
 					Title = 'Ciphers Suites and Hashes'
