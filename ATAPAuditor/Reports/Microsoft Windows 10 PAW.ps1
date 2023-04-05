@@ -2,14 +2,16 @@
 	Title = "Privileged Access Workstation Windows 10 Report"
 	ModuleName = "ATAPAuditor"
 	BasedOn = @(
+		"BSI SiM-08202 Client unter Windows 10, Version: 1, Date: 2017-09-13"
 		"CIS Microsoft Windows 10 Enterprise Release 21H1 Benchmark, Version: 1.12.0, Date: 2022-02-15"
 		"CIS Google Chrome Benchmark, Version: 2.0.0, Date: 2019-05-17"
 		'CIS Mozilla Firefox 38 ESR Benchmark, Version: 1.0.0, Date: 2015-12-31'
+		"Configuration Recommendations for Hardening of Windows 10 Using Built-in Functionalities: Version 1.3, Date: 2021-05-03"
+		"DISA Windows 10 Security Technical Implementation Guide, Version: V1R16, Date: 2019-10-25"
+		"DISA Google Chrome Security Technical Implementation Guide, Version: V1R15, Date: 2019-01-28"
+		'GDPR settings by Microsoft, Version: 16082019, Date: 2019-08-16'
 		"Microsoft Security baseline (FINAL) for Windows 10, Version: 21H1, Date: 2021-05-18"
 		"Microsoft Edge v99 Security Baseline FINAL, Version: 99, Date: 2022-03-07"
-		"SiSyPHuS Windows 10 - Telemetry components - Bundesamt fuer Sicherheit in der Informationstechnik (BSI), Version: V1.1, Date: 2019-07-31"
-		"BSI SiM-08202 Client unter Windows 10, Version: 1, Date: 2017-09-13"
-
 	)
 	Sections = @(
 		[ReportSection] @{

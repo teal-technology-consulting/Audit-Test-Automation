@@ -18,7 +18,7 @@ ATAPAuditor:\
 
 
 AuditTAP Release 5.5:\
-[![ATAP](https://www.fb-pro.com/wp-content/uploads/2022/09/atap-download-button.png)](https://github.com/fbprogmbh/Audit-Test-Automation/archive/refs/tags/v5.5.zip)
+[![ATAP](https://www.fb-pro.com/wp-content/uploads/2022/09/atap-download-button.png)](https://github.com/teal-technology-consulting/Teal-Audit-Proof/archive/refs/heads/master.zip)
 			</td>
 		</tr>
 	</table>
@@ -76,6 +76,8 @@ Microsoft Windows 10 | V1R23 | 1.12.0 | 21H1 | SiSyPHuS 1.3 | 21H1
 Microsoft Windows 10 GDPR | - | - | 16082019 | V1.1 | -
 Microsoft Windows 10 BSI | - | - | - | BPOL - SiM-08202, SiSyPHuS 1.3 | -
 Microsoft Windows 10 Stand-alone | - | Stand-alone 1.0.1 | - | SiSyPHuS 1.3 (Stand-alone) | -
+Microsoft Windows 10 PAW | Windows 10 V1R23, Chrome V1R15 | Windows 10 1.12.0, Google Chrome 2.0.0, Firefox 1.0.0 | Windows 10 21H2, Windows 10 16082019, Edge 99 | 
+SiM-08202, SiSyPHuS Version March 2021 (HD, ND, NE, Logging), SiSyPHuS 1.3 | 21H1
 Microsoft Windows 11 Stand-alone | - | Stand-alone 1.0.1 | - | SiSyPHuS 1.3 (Stand-alone) | -
 Microsoft Windows 11 | - | 1.0.0 | 20H2 | SiSyPHuS 1.3 | -
 Microsoft Windows Server 2012 | 2.19 | 2.6.0 | - | - | -
@@ -122,7 +124,7 @@ Following the well-known phrase "A picture is worth a thousand words" we visuali
 The first half of the video guides through the process of manual installation, the second half shows installation via PowerShell Gallery.
 
 <div align="center">
-   <a href="https://www.youtube-nocookie.com/embed/5fJGdHCxqpM">
+   <a href="https://www.youtube.com/watch?v=MfMs1bTjR1I">
      <img src="https://img.youtube.com/vi/5fJGdHCxqpM/0.jpg" 
       alt="How to get a transparent system hardening report?" 
      >
@@ -131,7 +133,7 @@ The first half of the video guides through the process of manual installation, t
 
 See the [Installing a PowerShell module](https://docs.microsoft.com/en-us/PowerShell/scripting/developer/module/installing-a-PowerShell-module) guide for more specific instructions.
 
-1. Download the most [recent release](https://github.com/fbprogmbh/Audit-Test-Automation/releases/latest)
+1. Download the most [recent release](https://github.com/teal-technology-consulting/Teal-Audit-Proof/releases/latest)
 2. In case your systems security configuration prevents direct execution / access on internet based ("untrusted") files you may need to "unblock" the file first. 
 
 ```PowerShell
@@ -152,7 +154,7 @@ Expand-Archive -Path ".\Audit-Test-Automation-5.5.zip" -DestinationPath "AuditTA
 
 ### Installer
 
-Download the installer from the [releases](https://github.com/fbprogmbh/Audit-Test-Automation/releases) page. The wizard will guide you through the installation steps to install the necessary modules, along with a convenient Start-menu shortcut.
+Download the installer from the [releases](https://github.com/teal-technology-consulting/Teal-Audit-Proof/releases) page. The wizard will guide you through the installation steps to install the necessary modules, along with a convenient Start-menu shortcut.
 
 ### Linux
 For usage on Linux systems a PowerShell installation is required. The necessary steps depend on the Linux distribution and is documented [here](https://docs.microsoft.com/en-us/PowerShell/scripting/install/installing-PowerShell-on-linux). Once PowerShell is installed proceed with a [manual](#manual-installation) installation or using [PS Gallery](#installation-from-ps-gallery).
@@ -263,8 +265,8 @@ Permanent scope: Machine
 
 ### AuditTAP information
 
-* GitHub-Link: https://github.com/fbprogmbh/Audit-Test-Automation
-* AuditTAP landing page: https://www.fb-pro.com/audit-tap-product-information
+* GitHub-Link: https://github.com/teal-technology-consulting/Teal-Audit-Proof
+* AuditTAP landing page: https://aktionen.teal-consulting.de/teal-audit-proof/?utm_source=produkt-seite
 * YouTube channel with more videos: https://www.youtube.com/channel/UCFolaYgClJ005glpn5owRUg
 * For the installer we are using the free Inno Setup for Windows provided by Jordan Russell and Martijn Laan. https://jrsoftware.org/isinfo.php
 
@@ -279,4 +281,4 @@ Permanent scope: Machine
 Please check the [FAQ-section](https://github.com/fbprogmbh/Audit-Test-Automation/tree/master/FAQ) first before opening an issue or contacting us.
 
 *  For questions or issues regarding AuditTAP please use GitHub issue tracker.
-*  For questions regarding project support please write a short mail to team@fb-pro.com 
+*  For questions regarding project support please write a short mail to info@teal-consulting.de
