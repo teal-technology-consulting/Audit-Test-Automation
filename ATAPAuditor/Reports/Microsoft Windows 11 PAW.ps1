@@ -2,7 +2,7 @@
 	Title = "Privileged Access Workstation Windows 11 Report"
 	ModuleName = "ATAPAuditor"
 	BasedOn = @(
-        "CIS Microsoft Windows 11 Enterprise Release 21H2 Benchmark, Version: 1.0.0,"
+        "CIS Microsoft Windows 11 Enterprise, Version: 1.0.0,"
         "CIS Google Chrome Benchmark, Version: 2.0.0, Date: 2019-05-17"
         'CIS Mozilla Firefox 38 ESR Benchmark, Version: 1.0.0, Date: 2015-12-31'
 		"Configuration Recommendations for Hardening of Windows 10 Using Built-in Functionalities: Version 1.3, Date: 2021-05-03"
