@@ -79,7 +79,7 @@ Microsoft Windows 10 Stand-alone | - | Stand-alone 1.0.1 | - | SiSyPHuS 1.3 (Sta
 Microsoft Windows 10 PAW | Windows 10 V1R23, Chrome V1R15 | Windows 10 1.12.0, Google Chrome 2.0.0, Firefox 1.0.0 | Windows 10 21H2, Windows 10 16082019, Edge 99 | SiM-08202, SiSyPHuS Version March 2021 (HD, ND, NE, Logging), SiSyPHuS 1.3 | 21H1
 Microsoft Windows 11 Stand-alone | - | Stand-alone 1.0.1 | - | SiSyPHuS 1.3 (Stand-alone) | -
 Microsoft Windows 11 | - | 1.0.0 | 22H2 | SiSyPHuS 1.3 | -
-Microsoft Windows 11 PAW | Chrome V1R15, Google Chrome 2.0.0, Firefox 1.0.0 | 1.0.0 | 22H2, Edge 99 | SiSyPHuS Version March 2021 (HD, ND, NE, Logging), SiSyPHuS 1.3 | -
+Microsoft Windows 11 PAW | Chrome V1R15 | 1.0.0, Google Chrome 2.0.0, Firefox 1.0.0 | 22H2, Edge 99 | SiSyPHuS Version March 2021 (HD, ND, NE, Logging), SiSyPHuS 1.3 | -
 Microsoft Windows Server 2012 | 2.19 | 2.6.0 | - | - | -
 Microsoft Windows Server 2016 | 1.12 | 1.4.0 | FINAL | - | -
 Microsoft Windows Server 2016 DC | V1R6 | 1.4.0 | FINAL | - | -
