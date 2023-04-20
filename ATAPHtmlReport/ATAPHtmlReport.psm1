@@ -1266,7 +1266,7 @@ function Get-ATAPHtmlReport {
 							htmlElement 'p' @{} {"Do you need support with system hardening?"}
 							htmlElement 'p' @{} {"Our team of system hardening experts will be happy to provide you with advice and support."}
 							htmlElement 'p' @{} {"Contact us for a no-obligation inquiry!"}
-							htmlElement 'a' @{href="https://info@teal-consulting.de"} {
+							htmlElement 'a' @{href="mailto:info@teal-consulting.de"} {
 								htmlElement 'button' @{id="contactUsButton"} {"CONTACT US!"}
 							}
 						}
