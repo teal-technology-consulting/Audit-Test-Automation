@@ -1260,7 +1260,7 @@ function Get-ATAPHtmlReport {
 							htmlElement 'p' @{} {"Teal Technology Consulting GmbH"}
 							htmlElement 'p' @{} {"Fon: 0211 93675225"}
 							htmlElement 'p' @{} {"Web: ";htmlElement 'a' @{href="https://www.teal-consulting.de/"} {"https://www.teal-consulting.de/"}}
-							htmlElement 'p' @{} {"Mail: "; htmlElement 'a' @{href="info@teal-consulting.de"} {"https://info@teal-consulting.de"}}
+							htmlElement 'p' @{} {"Mail: "; htmlElement 'a' @{href="mailto:info@teal-consulting.de"} {"info@teal-consulting.de"}}
 
 							htmlElement 'h3' @{} {"Can we help you? "}
 							htmlElement 'p' @{} {"Do you need support with system hardening?"}
