@@ -1,8 +1,8 @@
 #define AppName "Audit Test Automation Package"
 #define AppShortName "AuditTAP"
 #define LicenseFile "LICENSE"
-#define AppPublisher "FB Pro GmbH"
-#define AppURL "https://www.fb-pro.com/"
+#define AppPublisher "Teal Technology Consulting GmbH"
+#define AppURL "https://www.teal-consulting.de/"
 #define AppIcon "AT.ico"
 #define AppVersion "5.5"
 //#define BaseFolder "Audit-Test-Automation"
@@ -71,7 +71,7 @@ begin
       exit;
     end;
     DownloadPage.Clear;
-    DownloadPage.Add('https://github.com/fbprogmbh/Audit-Test-Automation/archive/refs/heads/approve.zip', 'atap-approve.zip', '');
+    DownloadPage.Add('https://github.com/teal-technology-consulting/Teal-Audit-Proof/archive/refs/heads/master.zip', 'atap-approve.zip', '');
     DownloadPage.Show;
     try
       try
