@@ -110,7 +110,6 @@ Find several detailed explanations below and use them as follows:
 
 * Installation via PSGallery - just install our package directly from PowerShell Gallery.
 * Manual installation - use the manual way in case you do not have internet connectivity on the system you want to check. We are aware of these "non connected" scenarios for example in datacenter environments.
-* New::star:Use our installer to install or update AuditTAP :star:
 
 ### Installation from PS Gallery
 Simple and straight-forward. Install AuditTAP with a single line of code.
@@ -149,11 +148,6 @@ When using PowerShell, please check correct version number with below code examp
 Expand-Archive -Path ".\Audit-Test-Automation-5.5.zip" -DestinationPath "AuditTAP"
 ```
 4. Copy `ATAPAuditor` and `ATAPHtmlReport` modules to any of the paths of `$env:PSModulePath`.
-
-
-### Installer
-
-Download the installer from the [releases](https://github.com/teal-technology-consulting/Teal-Audit-Proof/releases) page. The wizard will guide you through the installation steps to install the necessary modules, along with a convenient Start-menu shortcut.
 
 ### Linux
 For usage on Linux systems a PowerShell installation is required. The necessary steps depend on the Linux distribution and is documented [here](https://docs.microsoft.com/en-us/PowerShell/scripting/install/installing-PowerShell-on-linux). Once PowerShell is installed proceed with a [manual](#manual-installation) installation or using [PS Gallery](#installation-from-ps-gallery).
@@ -194,8 +188,6 @@ For updating ATAPHtmlReport:
 ```PowerShell
 Update-Module ATAPHtmlReport
 ```
-
-If you want to update via Installer, make sure to download the latest version of AuditTAP. Then just follow the installation steps.
 
 ## Good to know
 
@@ -267,7 +259,6 @@ Permanent scope: Machine
 * GitHub-Link: https://github.com/teal-technology-consulting/Teal-Audit-Proof
 * AuditTAP landing page: https://aktionen.teal-consulting.de/teal-audit-proof/?utm_source=produkt-seite
 * YouTube channel with more videos: https://www.youtube.com/channel/UCFolaYgClJ005glpn5owRUg
-* For the installer we are using the free Inno Setup for Windows provided by Jordan Russell and Martijn Laan. https://jrsoftware.org/isinfo.php
 
 ### Hardening recommendations in general
 * #NoCodeHardening: https://www.nocodehardening.com
