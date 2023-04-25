@@ -98,6 +98,6 @@ begin
   Result := True;
   if RegKeyExists(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{#AppShortName}_is1') or RegKeyExists(HKEY_CURRENT_USER, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{#AppShortName}_is1') then
   begin
-    Result := (MsgBox('{#AppShortName} is already installed. Do you want to overwrite?', mbConfirmation, MB_YESNO or MB_DEFBUTTON2) = IDYES);
+    Result := (MsgBox('{#AppShortName} is already installed. Do you want to overwrite? Test-Output', mbConfirmation, MB_YESNO or MB_DEFBUTTON2) = IDYES);
   end;
 end;
