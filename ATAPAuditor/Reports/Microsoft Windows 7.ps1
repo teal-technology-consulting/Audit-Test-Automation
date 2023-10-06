@@ -3,7 +3,7 @@
 	ModuleName = "ATAPAuditor"
 	BasedOn = @(
 		"CIS Microsoft Windows 7 Workstation Benchmark, Version: 3.1.0, Date: 2018-03-02"
-		"FB Pro recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+		"TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
 	)
 	Sections = @(
 		[ReportSection] @{
@@ -25,8 +25,8 @@
 			)
 		}
 		[ReportSection] @{
-			Title = 'FB Pro recommendations'
-			Description = 'This section contains the FB Pro recommendations.'
+			Title = 'TEAL recommendations'
+			Description = 'This section contains the TEAL recommendations.'
 			SubSections = @(
 				[ReportSection] @{
 					Title = 'Ciphers Suites and Hashes'
