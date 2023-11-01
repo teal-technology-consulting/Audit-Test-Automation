@@ -18,7 +18,7 @@ ATAPAuditor:\
 
 
 AuditTAP Release 5.6.3:\
-[![ATAP](https://www.fb-pro.com/wp-content/uploads/2022/09/atap-download-button.png)](https://github.com/fbprogmbh/Audit-Test-Automation/releases/tag/v5.6.3)
+[![ATAP](https://aktionen.teal-consulting.de/wp-content/uploads/2023/04/tap-button.png)](https://github.com/teal-technology-consulting/Teal-Audit-Proof/archive/refs/heads/master.zip)
 			</td>
 		</tr>
 	</table>
@@ -105,6 +105,7 @@ Microsoft Windows 10 | V1R23 | 2.0.0 | 21H1 | SiSyPHuS 1.3 | 21H1
 Microsoft Windows 10 GDPR | - | - | 16082019 | V1.1 | -
 Microsoft Windows 10 BSI | - | - | - | SiSyPHuS 1.3 | -
 Microsoft Windows 10 Stand-alone | - | Stand-alone 1.0.1 | - | SiSyPHuS 1.3 (Stand-alone) | -
+Microsoft Windows 10 PAW | Windows 10 V1R23, Chrome V1R15 | Windows 10 2.0.0, Google Chrome 2.0.0, Firefox 1.0.0 | Windows 10 21H1, Windows 10 16082019, Edge 99 | SiM-08202, SiSyPHuS Version March 2021 (HD, ND, NE, Logging), SiSyPHuS 1.3 | 21H1
 Microsoft Windows 11 Stand-alone | - | Stand-alone 1.0.1 | - | SiSyPHuS 1.3 (Stand-alone) | -
 Microsoft Windows 11 | - | 2.0.0 | 20H2 | SiSyPHuS 1.3 | -
 Microsoft Windows Server 2012 | 2.19 | 2.6.0 | - | - | -
@@ -135,7 +136,6 @@ Find several detailed explanations below and use them as follows:
 
 * Installation via PSGallery - just install our package directly from PowerShell Gallery.
 * Manual installation - use the manual way in case you do not have internet connectivity on the system you want to check. We are aware of these "non connected" scenarios for example in datacenter environments.
-* Use our installer to install or update
 
 ### Installation from PS Gallery
 Simple and straight-forward. Install  with a single line of code.
@@ -148,8 +148,8 @@ Following the well-known phrase "A picture is worth a thousand words" we visuali
 The first half of the video guides through the process of manual installation, the second half shows installation via PowerShell Gallery.
 
 <div align="center">
-   <a href="https://www.youtube-nocookie.com/embed/5fJGdHCxqpM">
-     <img src="https://img.youtube.com/vi/5fJGdHCxqpM/0.jpg" 
+   <a href="https://www.youtube.com/watch?v= MfMs1bTjR1I">
+     <img src="https://aktionen.teal-consulting.de/wp-content/uploads/2023/04/tap-video-thumbnail.jpg" 
       alt="How to get a transparent system hardening report?" 
      >
    </a>
@@ -157,7 +157,7 @@ The first half of the video guides through the process of manual installation, t
 
 See the [Installing a PowerShell module](https://docs.microsoft.com/en-us/PowerShell/scripting/developer/module/installing-a-PowerShell-module) guide for more specific instructions.
 
-1. Download the most [recent release](https://github.com/fbprogmbh/Audit-Test-Automation/releases/latest)
+1. Download the most [recent release](https://github.com/teal-technology-consulting/Teal-Audit-Proof/releases/latest)
 2. In case your systems security configuration prevents direct execution / access on internet based ("untrusted") files you may need to "unblock" the file first. 
 
 ```PowerShell
@@ -174,11 +174,6 @@ When using PowerShell, please check correct version number with below code examp
 Expand-Archive -Path ".\Audit-Test-Automation-5.6.zip" -DestinationPath "AuditTAP"
 ```
 4. Copy `ATAPAuditor` and `ATAPHtmlReport` modules to any of the paths of `$env:PSModulePath`.
-
-
-### Installer
-
-Download the installer from the [releases](https://github.com/fbprogmbh/Audit-Test-Automation/releases) page. The wizard will guide you through the installation steps to install the necessary modules, along with a convenient Start-menu shortcut.
 
 ### Linux
 For usage on Linux systems a PowerShell installation is required. The necessary steps depend on the Linux distribution and is documented [here](https://docs.microsoft.com/en-us/PowerShell/scripting/install/installing-PowerShell-on-linux). Once PowerShell is installed proceed with a [manual](#manual-installation) installation or using [PS Gallery](#installation-from-ps-gallery).
@@ -209,7 +204,7 @@ Save-ATAPHtmlReport -ReportName "Ubuntu 20.04"
 ```
 Pro-Tip: After typing *Save-ATAPHtmlReport -ReportName*, use the keyboard shortcut `<ctrl>` + `<space>` to display all available parameters and select the desired  report using arrow-keys.
 
-The `ATAPAuditor` module also provides a simple menu based runner for reports. It can be found in `ATAPAuditor\Helpers\Menu.ps1`. When using the Windows based installer, a shortcut can be found in the start menu.
+The `ATAPAuditor` module also provides a simple menu based runner for reports. It can be found in `ATAPAuditor\Helpers\Menu.ps1`.
 
 ## How to Update
 In order to update AuditTAP, you need to update both modules "ATAPAuditor" and "ATAPHtmlReport". To do that, just run the following line of code:
@@ -223,8 +218,6 @@ For updating ATAPHtmlReport:
 ```PowerShell
 Update-Module ATAPHtmlReport
 ```
-
-If you want to update via Installer, make sure to download the latest version of AuditTAP. Then just follow the installation steps.
 
 ## Good to know
 
@@ -261,11 +254,6 @@ ForEach ($item in $collection)
 }
 ```
 
-
-## Sample reports
-
-You can find several sample reports in the "Samples" folder.
-
 ## Customization
 
 You can change the default folder for `Save-ATAPHtmlReport`, which is `Documents\ATAPReports`, by creating and later editing the environment variable `ATAPReportPath`. 
@@ -289,10 +277,9 @@ Permanent scope: Machine
 
 ### AuditTAP information
 
-* GitHub-Link: https://github.com/fbprogmbh/Audit-Test-Automation
-* AuditTAP landing page: https://www.fb-pro.com/audit-tap-product-information
+* GitHub-Link: https://github.com/teal-technology-consulting/Teal-Audit-Proof
+* AuditTAP landing page: https://aktionen.teal-consulting.de/teal-audit-proof/?utm_source=produkt-seite
 * YouTube channel with more videos: https://www.youtube.com/channel/UCFolaYgClJ005glpn5owRUg
-* For the installer we are using the free Inno Setup for Windows provided by Jordan Russell and Martijn Laan. https://jrsoftware.org/isinfo.php
 
 ### Hardening recommendations in general
 * #NoCodeHardening: https://www.nocodehardening.com
@@ -305,4 +292,4 @@ Permanent scope: Machine
 Please check the [FAQ-section](https://github.com/fbprogmbh/Audit-Test-Automation/tree/master/FAQ) first before opening an issue or contacting us.
 
 *  For questions or issues regarding AuditTAP please use GitHub issue tracker.
-*  For questions regarding project support please write a short mail to team@fb-pro.com 
+*  For questions regarding project support please write a short mail to info@teal-consulting.de 
