@@ -118,7 +118,7 @@ The report *Microsoft Windows 10 BSI* aggregates the results of all *BSI recomme
 
 ### **Unix OS**
 
-Report | DISA | CIS | Microsoft | BSI | ACSC | FB Pro
+Report | DISA | CIS | Microsoft | BSI | ACSC | TEAL
 --------- | -----| --- | -- | --- | --- | ---
 Debian 10 | - | - | - | - | - | Base
 Fedora 35 | - | - | - | - | - | Base
