@@ -17,8 +17,9 @@ ATAPAuditor:\
 			<td>
 
 
-AuditTAP Release 5.6.3:\
-[![ATAP](https://aktionen.teal-consulting.de/wp-content/uploads/2023/04/tap-button.png)](https://github.com/teal-technology-consulting/Teal-Audit-Proof/archive/refs/heads/master.zip)
+AuditTAP Release 5.7.1:\
+[![ATAP]([![ataphtmlreportshield](https://aktionen.teal-consulting.de/wp-content/uploads/2023/04/tap-button.png)(https://github.com/teal-technology-consulting/Teal-Audit-Proof/archive/refs/heads/master.zip)
+)
 			</td>
 		</tr>
 	</table>
@@ -38,11 +39,14 @@ AuditTAP Release 5.6.3:\
   - [How to install](#how-to-install)
     - [Installation from PS Gallery](#installation-from-ps-gallery)
     - [Video tutorial for manual installation](#video-tutorial-for-manual-installation)
+    - [Installer](#installer)
     - [Linux](#linux)
   - [Usage](#usage)
   - [How to Update](#how-to-update)
   - [Good to know](#good-to-know)
+  - [Sample reports](#sample-reports)
   - [Customization](#customization)
+  - [Converting reports to Xml instead of HTML](#converting-reports-to-xml-instead-of-html)
   - [Related links](#related-links)
     - [AuditTAP information](#audittap-information)
     - [Hardening recommendations in general](#hardening-recommendations-in-general)
@@ -103,9 +107,9 @@ Microsoft Windows 10 | V1R23 | 2.0.0 | 21H1 | SiSyPHuS 1.3 | 21H1
 Microsoft Windows 10 GDPR | - | - | 16082019 | V1.1 | -
 Microsoft Windows 10 BSI | - | - | - | SiSyPHuS 1.3 | -
 Microsoft Windows 10 Stand-alone | - | Stand-alone 1.0.1 | - | SiSyPHuS 1.3 (Stand-alone) | -
-Microsoft Windows 10 PAW | Windows 10 V1R23, Chrome V1R15 | Windows 10 2.0.0, Google Chrome 2.0.0, Firefox 1.0.0 | Windows 10 21H1, Windows 10 16082019, Edge 99 | SiM-08202, SiSyPHuS Version March 2021 (HD, ND, NE, Logging), SiSyPHuS 1.3 | 21H1
-Microsoft Windows 11 Stand-alone | - | Stand-alone 1.0.1 | - | SiSyPHuS 1.3 (Stand-alone) | -
-Microsoft Windows 11 | - | 2.0.0 | 20H2 | SiSyPHuS 1.3 | -
+Microsoft Windows 10 PAW | Windows 10 V1R23, Chrome V1R15 | Windows 10 1.12.0, Google Chrome 2.0.0, Firefox 1.0.0 | Windows 10 21H2, Windows 10 16082019, Edge 99 | SiM-08202, SiSyPHuS Version March 2021 (HD, ND, NE, Logging), SiSyPHuS 1.3 | 21H1
+Microsoft Windows 11 Stand-alone | - | Stand-alone 2.0.0 | - | SiSyPHuS 1.3 (Stand-alone) | -
+Microsoft Windows 11 | - | 2.0.0 | 22H2 | SiSyPHuS 1.3 | -
 Microsoft Windows Server 2012 | 2.19 | 2.6.0 | - | - | -
 Microsoft Windows Server 2016 | 1.12 | 2.0.0 | FINAL | - | -
 Microsoft Windows Server 2016 DC | V1R6 | 2.0.0 | FINAL | - | -
@@ -118,13 +122,15 @@ The report *Microsoft Windows 10 BSI* aggregates the results of all *BSI recomme
 
 ### **Unix OS**
 
-Report | DISA | CIS | Microsoft | BSI | ACSC | TEAL
+Report | DISA | CIS | Microsoft | BSI | ACSC | FB Pro
 --------- | -----| --- | -- | --- | --- | ---
 Debian 10 | - | - | - | - | - | Base
 Fedora 35 | - | - | - | - | - | Base
 Red Hat Enterprise Linux 8 | - | - | - | - | - | Base
 Ubuntu 20.04 | - | 1.1.0 | - | - | - | Base
 Ubuntu 22.04 | - | 1.0.0 | - | - | - | Base
+Debian 11 | - | 1.0.0 | - | - | - | Base
+SUSE Linux Enterprise 15 | - | 1.1.1 | - | - | - | -
 
 
 
@@ -134,6 +140,7 @@ Find several detailed explanations below and use them as follows:
 
 * Installation via PSGallery - just install our package directly from PowerShell Gallery.
 * Manual installation - use the manual way in case you do not have internet connectivity on the system you want to check. We are aware of these "non connected" scenarios for example in datacenter environments.
+
 
 ### Installation from PS Gallery
 Simple and straight-forward. Install  with a single line of code.
@@ -173,6 +180,9 @@ Expand-Archive -Path ".\Audit-Test-Automation-5.6.zip" -DestinationPath "AuditTA
 ```
 4. Copy `ATAPAuditor` and `ATAPHtmlReport` modules to any of the paths of `$env:PSModulePath`.
 
+
+
+
 ### Linux
 For usage on Linux systems a PowerShell installation is required. The necessary steps depend on the Linux distribution and is documented [here](https://docs.microsoft.com/en-us/PowerShell/scripting/install/installing-PowerShell-on-linux). Once PowerShell is installed proceed with a [manual](#manual-installation) installation or using [PS Gallery](#installation-from-ps-gallery).
 
@@ -202,7 +212,7 @@ Save-ATAPHtmlReport -ReportName "Ubuntu 20.04"
 ```
 Pro-Tip: After typing *Save-ATAPHtmlReport -ReportName*, use the keyboard shortcut `<ctrl>` + `<space>` to display all available parameters and select the desired  report using arrow-keys.
 
-The `ATAPAuditor` module also provides a simple menu based runner for reports. It can be found in `ATAPAuditor\Helpers\Menu.ps1`.
+The `ATAPAuditor` module also provides a simple menu based runner for reports. It can be found in `ATAPAuditor\Helpers\Menu.ps1`. 
 
 ## How to Update
 In order to update AuditTAP, you need to update both modules "ATAPAuditor" and "ATAPHtmlReport". To do that, just run the following line of code:
@@ -216,6 +226,8 @@ For updating ATAPHtmlReport:
 ```PowerShell
 Update-Module ATAPHtmlReport
 ```
+
+
 
 ## Good to know
 
@@ -252,6 +264,11 @@ ForEach ($item in $collection)
 }
 ```
 
+
+## Sample reports
+
+You can find several sample reports in the "Samples" folder.
+
 ## Customization
 
 You can change the default folder for `Save-ATAPHtmlReport`, which is `Documents\ATAPReports`, by creating and later editing the environment variable `ATAPReportPath`. 
@@ -269,6 +286,17 @@ Permanent scope: CurrentUser
 Permanent scope: Machine
 ```PowerShell
 [System.Environment]::SetEnvironmentVariable('ATAPReportPath','C:\ATAPReports',[System.EnvironmentVariableTarget]::Machine)
+```
+
+## Converting reports to Xml instead of HTML
+
+For this functionality, it is handy to know the Invoke-ATAPReport command can be used:
+Just use the following code snippet, and exchange the variables "Reportname" and "FilePath".
+
+```ps
+$Reportname = "Microsoft Windows 11"
+$FilePath = "C://YourPath/YourFileName.xml"
+ConvertTo-Xml -InputObject (Invoke-ATAPReport -ReportName $ReportName) -As "String" -Depth 10 | Out-File -FilePath $FilePath
 ```
 
 ## Related links

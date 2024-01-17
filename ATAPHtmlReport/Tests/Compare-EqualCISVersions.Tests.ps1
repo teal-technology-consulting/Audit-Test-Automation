@@ -9,7 +9,7 @@ InModuleScope ATAPHtmlReport {
         It 'Test Windows 7' {
             $BasedOn = @(
                 "CIS Microsoft Windows 7 Workstation Benchmark, Version: 3.1.0, Date: 2018-03-02"
-                "TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+                "FB Pro recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
             )
             $MitreMappingCompatible =   @("CIS Microsoft Windows 10 Stand-alone Benchmark, Version: 1.0.1, Date: 2022-02-08",
             "CIS Microsoft Windows 11 Stand-alone Benchmark, Version: 1.0.0, Date: 2022-11-15",
@@ -33,8 +33,8 @@ InModuleScope ATAPHtmlReport {
                 "Configuration Recommendations for Hardening of Windows 10 Using Built-in Functionalities: Version 1.3, Date: 2021-05-03"
                 "SiSyPHuS Recommendations for Telemetry Components: Version 1.2, Date: 2020-04-27"
                 "ACSC Hardening Microsoft Windows 10 version 21H1 Workstations, Version: 10.2021, Date 2021-10-01"
-                "TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
-                "TEAL recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
+                "FB Pro recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+                "FB Pro recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
             )
             $MitreMappingCompatible =   @("CIS Microsoft Windows 10 Stand-alone Benchmark, Version: 1.0.1, Date: 2022-02-08",
             "CIS Microsoft Windows 11 Stand-alone Benchmark, Version: 1.0.0, Date: 2022-11-15",
@@ -55,8 +55,8 @@ InModuleScope ATAPHtmlReport {
                 "CIS Microsoft Windows 11 Stand-alone Benchmark, Version: 1.0.0, Date: 2022-11-15"
                 "Configuration Recommendations for Hardening of Windows 10 Using Built-in Functionalities: Version 1.3, Date: 2021-05-03"
                 "SiSyPHuS Recommendations for Telemetry Components: Version 1.1, Date: 2019-07-31"
-                "TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
-                "TEAL recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
+                "FB Pro recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+                "FB Pro recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
             )
             $MitreMappingCompatible =   @("CIS Microsoft Windows 10 Stand-alone Benchmark, Version: 1.0.1, Date: 2022-02-08",
             "CIS Microsoft Windows 11 Stand-alone Benchmark, Version: 1.0.0, Date: 2022-11-15",
@@ -78,8 +78,8 @@ InModuleScope ATAPHtmlReport {
                 "Security baseline for Microsoft Windows 11, Version: 20H2, Date: 2020-12-17"
                 "Configuration Recommendations for Hardening of Windows 10 Using Built-in Functionalities: Version 1.3, Date: 2021-05-03"
                 "SiSyPHuS Recommendations for Telemetry Components: Version 1.1, Date: 2019-07-31"
-                "TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
-                "TEAL recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
+                "FB Pro recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+                "FB Pro recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
             )
             $MitreMappingCompatible =   @("CIS Microsoft Windows 10 Stand-alone Benchmark, Version: 1.0.1, Date: 2022-02-08",
             "CIS Microsoft Windows 11 Stand-alone Benchmark, Version: 1.0.0, Date: 2022-11-15",
@@ -100,8 +100,8 @@ InModuleScope ATAPHtmlReport {
                 "CIS Microsoft Windows 11 Stand-alone Benchmark, Version: 1.0.0, Date: 2022-11-15"
                 "Configuration Recommendations for Hardening of Windows 10 Using Built-in Functionalities: Version 1.3, Date: 2021-05-03"
                 "SiSyPHuS Recommendations for Telemetry Components: Version 1.1, Date: 2019-07-31"
-                "TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
-                "TEAL recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
+                "FB Pro recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+                "FB Pro recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
             )
             $MitreMappingCompatible =   @("CIS Microsoft Windows 10 Stand-alone Benchmark, Version: 1.0.1, Date: 2022-02-08",
             "CIS Microsoft Windows 11 Stand-alone Benchmark, Version: 1.0.0, Date: 2022-11-15",
@@ -122,8 +122,8 @@ InModuleScope ATAPHtmlReport {
                 "Windows Server 2019 Security Technical Implementation Guide, Version: 1.5, Date: 2020-06-17"
                 "CIS Microsoft Windows Server 2019 Benchmark, Version: 1.3.0, Date: 2022-03-18"
                 "Microsoft Security baseline for Windows Server 2019, Version: FINAL, Date 2019-06-18"
-                "TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
-                "TEAL recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
+                "FB Pro recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+                "FB Pro recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
             )
             $MitreMappingCompatible =   @("CIS Microsoft Windows 10 Stand-alone Benchmark, Version: 1.0.1, Date: 2022-02-08",
             "CIS Microsoft Windows 11 Stand-alone Benchmark, Version: 1.0.0, Date: 2022-11-15",
@@ -144,8 +144,8 @@ InModuleScope ATAPHtmlReport {
                 "Security baseline for Microsoft Windows Server 2022, Version: FINAL, Date 2021-09-27"
                 "CIS Microsoft Windows Server 2022, Version: 1.0.0, Date 2022-02-14"
                 "DISA Windows Server 2022, Version: V1R1, Date 2022-09-28"
-                "TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
-                "TEAL recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
+                "FB Pro recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+                "FB Pro recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
             )
             $MitreMappingCompatible =   @("CIS Microsoft Windows 10 Stand-alone Benchmark, Version: 1.0.1, Date: 2022-02-08"
             "CIS Microsoft Windows 11 Stand-alone Benchmark, Version: 1.0.0, Date: 2022-11-15"
@@ -169,8 +169,8 @@ InModuleScope ATAPHtmlReport {
                 "Configuration Recommendations for Hardening of Windows 10 Using Built-in Functionalities: Version 1.3, Date: 2021-05-03"
                 "SiSyPHuS Recommendations for Telemetry Components: Version 1.2, Date: 2020-04-27"
                 "ACSC Hardening Microsoft Windows 10 version 21H1 Workstations, Version: 10.2021, Date 2021-10-01"
-                "TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
-                "TEAL recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
+                "FB Pro recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+                "FB Pro recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
             )
             $MitreMappingCompatible =   @("CIS Microsoft Windows 10 Stand-alone Benchmark, Version: 1.0.1, Date: 2022-02-08",
             "CIS Microsoft Windows 11 Stand-alone Benchmark, Version: 1.0.0, Date: 2022-11-15",
@@ -189,8 +189,8 @@ InModuleScope ATAPHtmlReport {
                 "Configuration Recommendations for Hardening of Windows 10 Using Built-in Functionalities: Version 1.3, Date: 2021-05-03"
                 "SiSyPHuS Recommendations for Telemetry Components: Version 1.2, Date: 2020-04-27"
                 "ACSC Hardening Microsoft Windows 10 version 21H1 Workstations, Version: 10.2021, Date 2021-10-01"
-                "TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
-                "TEAL recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
+                "FB Pro recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+                "FB Pro recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
             )
             $MitreMappingCompatible =   @("CIS Microsoft Windows 10 Stand-alone Benchmark, Version: 1.0.1, Date: 2022-02-08",
             "CIS Microsoft Windows 11 Stand-alone Benchmark, Version: 1.0.0, Date: 2022-11-15",
@@ -209,8 +209,8 @@ InModuleScope ATAPHtmlReport {
                 "Configuration Recommendations for Hardening of Windows 10 Using Built-in Functionalities: Version 1.3, Date: 2021-05-03"
                 "SiSyPHuS Recommendations for Telemetry Components: Version 1.2, Date: 2020-04-27"
                 "ACSC Hardening Microsoft Windows 10 version 21H1 Workstations, Version: 10.2021, Date 2021-10-01"
-                "TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
-                "TEAL recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
+                "FB Pro recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+                "FB Pro recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
             )
             $MitreMappingCompatible =   @("CIS Microsoft Windows 10 Stand-alone Benchmark, Version: 1.0.1, Date: 2022-02-08",
             "CIS Microsoft Windows 11 Stand-alone Benchmark, Version: 1.0.0, Date: 2022-11-15",

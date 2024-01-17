@@ -37,7 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 RootModule = 'ATAPHtmlReport.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.13.1'
+ModuleVersion = '1.13.2'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -52,7 +52,7 @@ Author = 'Benedikt Böhme, Patrick Helbach, Steffen Winternheimer'
 CompanyName = 'Teal Technology Consulting GmbH'
 
 # Copyright statement for this module
-Copyright = '(c) 2023 FB Pro GmbH, (c) 2023, Teal Technology Consulting GmbH. All rights reserved.'
+Copyright = '(c) 2023 FB Pro GmbH,(c) 2023, Teal Technology Consulting GmbH. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'A module part of the Audit Test Automation Package that creates html reports with tables and sections for audit reporting'
@@ -120,11 +120,10 @@ PrivateData = @{
 	PSData = @{
 
 		# Tags applied to this module. These help with module discovery in online galleries.
-		Tags = @('reporting', 'auditing', 'benchmarks', 'fb-pro', 'teal-technology-consulting', 'html')
+		Tags = @('reporting', 'auditing', 'benchmarks', 'fb-pro','teal-technology-consulting', 'html')
 
 		# A URL to the license for this module.
-		LicenseUri = 'https://github.com/teal-technology-consulting/Teal-Audit-Proof/blob/master/LICENSE'
-
+		LicenseUri = 'https://github.com/teal-technology-consulting/Teal-Audit-Proof/blob/master/LICENSE’
 		# A URL to the main website for this project.
 		ProjectUri = 'https://github.com/teal-technology-consulting/Teal-Audit-Proof'
 

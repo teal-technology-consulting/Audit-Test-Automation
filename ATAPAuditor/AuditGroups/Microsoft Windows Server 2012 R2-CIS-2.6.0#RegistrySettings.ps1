@@ -1129,7 +1129,7 @@ $windefrunning = CheckWindefRunning
     Task = "(L1) Ensure 'Microsoft network server: Digitally sign communications (always)' is set to 'Enabled'"
     Test = {
         try {
-            if((Get-SmbServerConfiguration).RequireSecuritySignature -ne $True){
+            if((Get-SmbServerConfiguration -ErrorAction Stop).RequireSecuritySignature -ne $True){
                 return @{
                     Message = "RequireSecuritySignature is not set to True"
                     Status = "False"
@@ -1141,21 +1141,15 @@ $windefrunning = CheckWindefRunning
             }
         }
         catch {
-            try{
+                       try{
                 $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\LanManServer\Parameters" `
                 -Name "RequireSecuritySignature" `
                 | Select-Object -ExpandProperty "RequireSecuritySignature"
                 
-                if ($regValue -ne 1) {
-                    return @{
-                        Message = "Registry value is '$regValue'. Expected: 1"
-                        Status = "False"
-                    }
-                }
                 return @{
-                    Message = "Compliant"
-                    Status = "True"
+                    Message = "Registry value is '$regValue'. Get-SMBServerConfiguration failed, resorted to checking registry, which might not be 100% accurate. See <a href=`"https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/overview-server-message-block-signing#policy-locations-for-smb-signing`">here</a> and <a href=`"https://techcommunity.microsoft.com/t5/storage-at-microsoft/smb-signing-required-by-default-in-windows-insider/ba-p/3831704`">here</a>"
+                    Status = "Warning"
                 }
             }
             catch [System.Management.Automation.PSArgumentException] {
@@ -1178,7 +1172,7 @@ $windefrunning = CheckWindefRunning
     Task = "(L1) Ensure 'Microsoft network server: Digitally sign communications (if client agrees)' is set to 'Enabled'"
     Test = {
         try {
-            if((Get-SmbServerConfiguration).EnableSecuritySignature -ne $True){
+            if((Get-SmbServerConfiguration -ErrorAction Stop).EnableSecuritySignature -ne $True){
                 return @{
                     Message = "EnableSecuritySignature is not set to True"
                     Status = "False"
@@ -1196,15 +1190,9 @@ $windefrunning = CheckWindefRunning
                 -Name "EnableSecuritySignature" `
                 | Select-Object -ExpandProperty "EnableSecuritySignature"
                 
-                if ($regValue -ne 1) {
-                    return @{
-                        Message = "Registry value is '$regValue'. Expected: 1"
-                        Status = "False"
-                    }
-                }
                 return @{
-                    Message = "Compliant"
-                    Status = "True"
+                    Message = "Registry value is '$regValue'. Get-SMBServerConfiguration failed, resorted to checking registry, which might not be 100% accurate. See <a href=`"https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/overview-server-message-block-signing#policy-locations-for-smb-signing`">here</a> and <a href=`"https://techcommunity.microsoft.com/t5/storage-at-microsoft/smb-signing-required-by-default-in-windows-insider/ba-p/3831704`">here</a>"
+                    Status = "Warning"
                 }
             }
             catch [System.Management.Automation.PSArgumentException] {
@@ -1607,11 +1595,25 @@ $windefrunning = CheckWindefRunning
         }
     }
 }
+$CARoleStatus = $null
+$WINSStatus = $null
+try {
+    $CARoleStatus = (Get-WindowsFeature -Name ADCS-Cert-Authority -ErrorAction Stop).Installed
+    $WINSStatus = (Get-WindowsFeature -Name WINS -ErrorAction Stop).Installed
+} catch {
+    Write-Verbose "Get-WindowsFeature is not installed."
+}
 [AuditTest] @{
     Id = "2.3.10.9 A"
     Task = "(L1) Configure 'Network access: Remotely accessible registry paths and sub-paths'"
     Test = {
         try {
+            if (($CARoleStatus -or $WINSStatus) -eq $true){
+                return @{
+                    Message = "WINS Role Feature or CA Role Service are installed"
+                    Status = "None"
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\SecurePipeServers\Winreg\AllowedPaths" `
                 -Name "Machine" `
@@ -1661,6 +1663,12 @@ $windefrunning = CheckWindefRunning
     Task = "(L1) Ensure 'Network access: Remotely accessible registry paths and sub-paths' is configured [CA Role Service installed]"
     Test = {
         try {
+            if ($CARoleStatus -eq $false){
+                return @{
+                    Message = "CA Role Service NOT installed"
+                    Status = "None"
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\SecurePipeServers\Winreg\AllowedPaths" `
                 -Name "Machine" `
@@ -1711,6 +1719,12 @@ $windefrunning = CheckWindefRunning
     Task = "(L1) Ensure 'Network access: Remotely accessible registry paths and sub-paths' is configured [WINS Role Feature installed]"
     Test = {
         try {
+            if ($WINSStatus -eq $false){
+                return @{
+                    Message = "WINS Role Feature NOT installed"
+                    Status = "None"
+                }
+            }
             $regValue = Get-ItemProperty -ErrorAction Stop `
                 -Path "Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\SecurePipeServers\Winreg\AllowedPaths" `
                 -Name "Machine" `

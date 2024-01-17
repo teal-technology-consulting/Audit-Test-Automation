@@ -207,7 +207,7 @@ function calcDotPosition(){
     }
     else if(totalComplianceValue == 2){
         riskResult.innerText = "Medium";
-        riskResult.style.backgroundColor = "#FFFF00";
+        riskResult.style.backgroundColor = "#FFFF00 ";
     }
     else if(totalComplianceValue == 3){
         riskResult.innerText = "High";
@@ -217,7 +217,7 @@ function calcDotPosition(){
     else{
         riskResult.innerText = "Critical";
         riskResult.style.color = "white";
-        riskResult.style.backgroundColor = "FF0000";
+        riskResult.style.backgroundColor = "#FF0000";
     }
     riskResult.style.display = "inline";
     riskResult.style.padding = "5px 10px";

@@ -25,8 +25,8 @@
 			)
 		}
 		[ReportSection] @{
-			Title = 'TEAL recommendations'
-			Description = 'This section contains the TEAL recommendations.'
+			Title = 'FB Pro recommendations'
+			Description = 'This section contains the FB Pro recommendations.'
 			SubSections = @(
 				[ReportSection] @{
 					Title = 'Ciphers Suites and Hashes'
