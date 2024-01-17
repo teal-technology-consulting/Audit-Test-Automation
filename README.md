@@ -18,8 +18,7 @@ ATAPAuditor:\
 
 
 AuditTAP Release 5.7.1:\
-[![ATAP]([![ataphtmlreportshield](https://aktionen.teal-consulting.de/wp-content/uploads/2023/04/tap-button.png)(https://github.com/teal-technology-consulting/Teal-Audit-Proof/archive/refs/heads/master.zip)
-)
+[![ATAP](https://aktionen.teal-consulting.de/wp-content/uploads/2023/04/tap-button.png)](https://github.com/teal-technology-consulting/Teal-Audit-Proof/archive/refs/heads/master.zip)
 			</td>
 		</tr>
 	</table>
