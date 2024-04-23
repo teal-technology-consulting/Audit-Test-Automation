@@ -6,8 +6,8 @@
         "Windows Server 2019 Security Technical Implementation Guide, Version: 1.5, Date: 2020-06-17"
 		"CIS Microsoft Windows Server 2019 Benchmark, Version: 2.0.0, Date: 2023-04-14"
 		"Microsoft Security baseline for Windows Server 2019, Version: FINAL, Date 2019-06-18"
-		"FB Pro recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
-		"FB Pro recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
+		"TEAL recommendations 'Ciphers Protocols and Hashes Benchmark', Version 1.1.0, Date: 2021-04-15"
+		"TEAL recommendations 'Enhanced settings', Version 1.1.0, Date: 2023-02-24"
 	)
 	Sections = @(
 		[ReportSection] @{
@@ -81,8 +81,8 @@
 			)
 		}
 		[ReportSection] @{
-			Title = 'FB Pro recommendations'
-			Description = 'This section contains the FB Pro recommendations.'
+			Title = 'TEAL recommendations'
+			Description = 'This section contains the TEAL recommendations.'
 			SubSections = @(
 				[ReportSection] @{
 					Title = 'Ciphers Suites and Hashes'

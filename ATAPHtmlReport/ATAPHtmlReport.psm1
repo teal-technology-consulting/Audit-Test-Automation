@@ -1,6 +1,6 @@
 ﻿<#
 BSD 3-Clause License
-Copyright (c) 2023, FB Pro GmbH
+Copyright (c) 2023, Teal Technology Consulting GmbH
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -1205,8 +1205,7 @@ function Get-ATAPHtmlReport {
 			# Header
 			htmlElement 'div' @{ class = 'header content' } {
 				htmlElement 'div' @{ id = "logo"} {
-					htmlElement 'h1' @{id ="companyName"} {"FB PRO GMBH"}
-					htmlElement 'p' @{} {"System Hardening & Data Protection"}
+					htmlElement 'img' @{src = $Settings.Logo; width="300"; height="118";} {}
 				}
 				htmlElement 'div' @{ id = "reportInformation"} {
 					htmlElement 'h1' @{} { $Title }
@@ -1812,39 +1811,39 @@ function Get-ATAPHtmlReport {
 					Write-Progress -Activity "Creating references page" -Status "Progress:" -PercentComplete 83
 					htmlElement 'div' @{class = 'tabContent'; id = 'references'}{
 						htmlElement 'h1' @{} {"About us"}
-						htmlElement 'h2' @{} {"What makes FB Pro GmbH different"}
+						htmlElement 'h2' @{} {"Why TEAL and what makes us special"}
 						htmlElement 'h3' @{} {"What do we want?"}
-						htmlElement 'p' @{} {"Protect our customers' data and information - and thus implicitly contribute to the safe use of the Internet."}
+						htmlElement 'p' @{} {"Enable you to easily get started securing your infrastructure, known as system-hardening, and securely configure applications, clients, servers, and cloud systems."}
 						htmlElement 'h3' @{} {"How do we achieve this? "}
-						htmlElement 'p' @{} {"We implement in-depth IT security for our customers. And we always do so in a state-of-the-art, efficient and automated manner."}
+						htmlElement 'p' @{} {"You receive a documented overview of the conformity / non-conformity of explicit settings, which supports you in the implementation and adherence to compliance processes. We rely on testing against common industry standards such as those of the German Federal Office for Information Security (BSI), the Center of Internet Security (CIS) or manufacturers such as Microsoft. We rely on an experienced team of Technology Consultants and our long-standing experience."}
 						htmlElement 'div'@{id="referencesContainer"}{
 							htmlElement 'div'@{}{
 								htmlElement 'h2' @{} {"Check out our hardening solution"}
-								htmlElement 'a' @{href="https://www.fb-pro.com/enforce-administrator-product/"}{
-									htmlElement 'img' @{height="200px"; width="125px"; src=$Settings.EA}{}
+								htmlElement 'a' @{href="https://aktionen.teal-consulting.de/enforce-administrator/"}{
+									htmlElement 'img' @{height="200px"; width="165px"; src=$Settings.EA}{}
 								}
 
 							}
 
 							htmlElement 'div'@{}{
 								htmlElement 'h2' @{} {"Check out our Audit Report Tool here"}
-								htmlElement 'a' @{href="https://www.fb-pro.com/audit-tap-product-information/"}{
-									htmlElement 'img' @{height="200px"; width="125px"; src=$Settings.ATAP}{}		
+								htmlElement 'a' @{href="https://aktionen.teal-consulting.de/teal-audit-proof/"}{
+									htmlElement 'img' @{height="200px"; width="165px"; src=$Settings.ATAP}{}		
 								}
 							}				
 						}
 						htmlElement 'footer' @{} {
 							htmlElement 'h3' @{} {"Contact us:"}
-							htmlElement 'p' @{} {"FB Pro GmbH"}
-							htmlElement 'p' @{} {"Fon: +49 6727 7559039"}
-							htmlElement 'p' @{} {"Web: ";htmlElement 'a' @{href="https://www.fb-pro.com/"} {"https://www.fb-pro.com/"}}
-							htmlElement 'p' @{} {"Mail: "; htmlElement 'a' @{href="mailto:info@fb-pro.com"} {"info@fb-pro.com"}}
+							htmlElement 'p' @{} {"Teal Technology Consulting GmbH"}
+							htmlElement 'p' @{} {"Fon: +49 211 93675225"}
+							htmlElement 'p' @{} {"Web: ";htmlElement 'a' @{href="https://www.teal-consulting.de/"} {"https://www.teal-consulting.de/"}}
+							htmlElement 'p' @{} {"Mail: "; htmlElement 'a' @{href="mailto:info@teal-consulting.de"} {"info@teal-consulting.de"}}
 
 							htmlElement 'h3' @{} {"Can we help you? "}
 							htmlElement 'p' @{} {"Do you need support with system hardening?"}
 							htmlElement 'p' @{} {"Our team of system hardening experts will be happy to provide you with advice and support."}
 							htmlElement 'p' @{} {"Contact us for a no-obligation inquiry!"}
-							htmlElement 'a' @{href="mailto:info@fb-pro.com"} {
+							htmlElement 'a' @{href="mailto:info@teal-consulting.de"} {
 								htmlElement 'button' @{id="contactUsButton"} {"CONTACT US!"}
 							}
 						}

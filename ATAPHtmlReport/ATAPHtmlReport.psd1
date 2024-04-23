@@ -1,7 +1,7 @@
 ﻿<#
 BSD 3-Clause License
 
-Copyright (c) 2023, FB Pro GmbH
+Copyright (c) 2023, Teal Technology Consulting GmbH
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -48,10 +48,10 @@ GUID = 'b732e8cd-6500-4da8-ac96-ab60087c739b'
 Author = 'Benedikt Böhme, Patrick Helbach, Steffen Winternheimer'
 
 # Company or vendor of this module
-CompanyName = 'FB Pro GmbH'
+CompanyName = 'Teal Technology Consulting GmbH'
 
 # Copyright statement for this module
-Copyright = '(c) 2023 FB Pro GmbH. All rights reserved.'
+Copyright = '(c) 2023 Teal Technology Consulting GmbH. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'A module part of the Audit Test Automation Package that creates html reports with tables and sections for audit reporting'
@@ -119,13 +119,13 @@ PrivateData = @{
 	PSData = @{
 
 		# Tags applied to this module. These help with module discovery in online galleries.
-		Tags = @('reporting', 'auditing', 'benchmarks', 'fb-pro', 'html')
+		Tags = @('reporting', 'auditing', 'benchmarks', 'teal-technology-consulting', 'html')
 
 		# A URL to the license for this module.
-		LicenseUri = 'https://github.com/fbprogmbh/Audit-Test-Automation/blob/master/LICENSE'
+		LicenseUri = 'https://github.com/teal-technology-consulting/Audit-Test-Automation/blob/master/LICENSE'
 
 		# A URL to the main website for this project.
-		ProjectUri = 'https://github.com/fbprogmbh/Audit-Test-Automation'
+		ProjectUri = 'https://github.com/teal-technology-consulting/Audit-Test-Automation'
 
 		# A URL to an icon representing this module.
 		# IconUri = ''
