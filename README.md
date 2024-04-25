@@ -40,7 +40,6 @@ AuditTAP Release 5.9.0:\
   - [How to install](#how-to-install)
     - [Installation from PS Gallery](#installation-from-ps-gallery)
     - [Video tutorial for manual installation](#video-tutorial-for-manual-installation)
-    - [Installer](#installer)
     - [Linux](#linux)
   - [Usage](#usage)
   - [How to Update](#how-to-update)
